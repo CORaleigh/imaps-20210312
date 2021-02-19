@@ -1,0 +1,29 @@
+.actionbar-base {
+  display: flex;
+}
+
+.left {
+  flex-direction: row-reverse;
+}
+
+.right {
+  flex-direction: row;
+
+}
+
+calcite-action-bar {
+  min-width: 50px;
+}
+
+calcite-panel[dismissed] {
+  width: 0;
+}
+
+calcite-panel {
+  min-width: 0px;
+  max-width: 350px;
+  height: 100%;
+  width: 350px;
+  max-height: 100%;
+}
+

@@ -1,0 +1,88 @@
+.propertysearch-base {
+  height: 100%;
+  width: 100%;
+}
+$include_RasterSymbologyEditor: false !default;
+
+
+
+calcite-tabs {
+  height: calc(100% - 40px);
+}
+
+calcite-tab {
+  height: 100%;
+}
+
+#feature .esri-feature-media__item img {
+  max-width: 100%;
+}
+#feature {
+  overflow: hidden;
+  height: 100%; 
+}
+#featureDiv {
+  overflow: auto;
+  /* height: calc(100% - 80px); */
+  height: 100%;
+}
+#feature .esri-feature-fields__field-header {
+  font-weight: bolder;
+}
+#feature .esri-feature__content-element {
+  padding: 0 24px;
+}
+#feature .esri-feature-fields__field-header {
+  font-weight: bolder;
+}
+#feature .esri-feature__content-element {
+  padding: 0 24px;
+}
+#feature calcite-button {
+  padding: 4px;
+  min-width: 120px;
+}
+
+#feature calcite-button {
+  padding: 4px;
+  min-width: 120px;
+}
+input, select { font-size: 16px !important;}
+.esri-search {
+  font-size: 16px !important;
+}
+.esri-search {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.esri-search {
+  width: 100%;
+  border-bottom-color: rgb(234, 234, 234);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;  
+} 
+.esri-search__warning-menu {
+  display: none;
+}
+#search-suggest-menu {
+  z-index: 10000 !important;
+}
+
+#search {
+  width: 100%;
+}
+
+
+input, select { font-size: 16px !important;}
+.esri-search {
+  font-size: 16px !important;
+}
+.esri-search {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+#search-suggest-menu {
+  z-index: 10000 !important;
+}
