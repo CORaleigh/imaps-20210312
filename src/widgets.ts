@@ -1,34 +1,41 @@
 // Widgets
-import LayerList from '@arcgis/core//widgets/LayerList';
 import Legend from '@arcgis/core//widgets/Legend';
 import ActionBar from './widgets/ActionBar';
 import PropertySearch from './widgets/PropertySearch';
 import { condosTable, addressTable, featureLayer, createTemplate } from './data/search';
 import LocationSearch from './widgets/LocationSearch';
 import Layers from './widgets/Layers';
+import BaseMaps from './widgets/BaseMaps';
+import Select from './widgets/Select';
+
+export let actionBar: ActionBar;
+export let propertySearch: PropertySearch;
+export let select: Select;
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function initWidgets(view: __esri.MapView) {
 	createTemplate(view);
 	const legend = new Legend({ view });
-	const layerList = new LayerList({ view });
 	const layers = new Layers({ view });
-	const propertySearch = new PropertySearch({
+	const basemaps = new BaseMaps({ view: view });
+	propertySearch = new PropertySearch({
 		view: view,
 		condosTable: condosTable,
 		addressTable: addressTable,
 		propertyLayer: featureLayer,
+	});
+
+	select = new Select({
+		view: view,
+		layer: featureLayer,
 	});
 	const locationSearch = new LocationSearch({ view });
 	new ActionBar({
 		view: view,
 		container: 'leftbar',
 		side: 'left',
-		actions: [
-			{ title: 'Select', widget: layerList, icon: 'selection', container: 'selectDiv', active: false },
-			{ title: 'Legend', widget: legend, icon: 'legend', container: 'legendDiv', active: false },
-		],
+		actions: [{ title: 'Select', widget: select, icon: 'selection', container: 'selectDiv', active: false }],
 	});
-	new ActionBar({
+	actionBar = new ActionBar({
 		view: view,
 		container: 'rightbar',
 		side: 'right',
@@ -54,6 +61,14 @@ export function initWidgets(view: __esri.MapView) {
 				container: 'layerDiv',
 				active: false,
 			},
+			{
+				title: 'Basemaps',
+				widget: basemaps,
+				icon: 'basemap',
+				container: 'basemapDiv',
+				active: false,
+			},
+			{ title: 'Legend', widget: legend, icon: 'legend', container: 'legendDiv', active: false },
 		],
 	});
 

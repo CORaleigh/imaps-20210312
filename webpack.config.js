@@ -116,7 +116,37 @@ module.exports = function build(env, arg) {
       new ArcGISPlugin({
         useDefaultAssetLoaders: false,
         features: {
-          "3d": false
+          "3d": false,
+          userDefinedExcludes: [
+            "@arcgis/core/layers/BingMapsLayer",
+            "@arcgis/core/layers/CSVLayer",
+            "@arcgis/core/layers/GeoRSSLayer",
+            "@arcgis/core/layers/ImageryLayer",
+            "@arcgis/core/layers/KMLLayer",
+            "@arcgis/core/layers/MapImageLayer",
+            "@arcgis/core/layers/OpenStreetMapLayer",
+            "@arcgis/core/layers/StreamLayer",
+            "@arcgis/core/layers/WMSLayer",
+            "@arcgis/core/layers/WMTSLayer",
+            "@arcgis/core/layers/WebTileLayer",
+            "@arcgis/core/form/ExpressionInfo",      
+            "@arcgis/core/form/FormTemplate",      
+            "@arcgis/core/form/elements/FieldElement",     
+            "@arcgis/core/form/elements/GroupElement",      
+            "@arcgis/core/form/inputs/DateTimePickerInput",                              
+            "@arcgis/core/form/inputs/Input",                              
+            "@arcgis/core/form/inputs/TextAreaInput",                              
+            "@arcgis/core/form/inputs/TextBoxInput",                              
+            "@arcgis/core/form/inputs/TextInput",
+            "@arcgis/core/tasks/ClosestFacilityTask",
+            "@arcgis/core/tasks/FindTask",
+            "@arcgis/core/tasks/ImageIdentifyTask",
+            "@arcgis/core/tasks/ImageServiceIdentifyTask",
+            "@arcgis/core/tasks/RouteTask",
+            "@arcgis/core/tasks/ServiceAreaTask",
+
+
+          ]          
         }
    }),
 
