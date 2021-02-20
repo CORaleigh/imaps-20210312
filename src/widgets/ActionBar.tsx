@@ -9,6 +9,7 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import ActionBarViewModel from './ActionBar/ActionBarViewModel';
 import './ActionBar/styles/ActonBar.scss';
+import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 
 export interface ActionBarProperties extends esri.WidgetProperties {
 	side?: string;
@@ -31,6 +32,7 @@ export default class ActionBar extends Widget {
 	actions: Action[] = [];
 	@aliasOf('viewModel.title')
 	title = '';
+
 	@property({
 		type: ActionBarViewModel,
 	})
@@ -41,23 +43,12 @@ export default class ActionBar extends Widget {
 	constructor(properties?: ActionBarProperties) {
 		super(properties);
 	}
+
 	actionBarCreated = (elm: HTMLElement): void => {
 		elm.addEventListener('click', (evt) => {
 			document.getElementById(this.side + 'Panel')?.removeAttribute('dismissed');
-			const name = (evt.target as HTMLElement).getAttribute('name');
-			const action: Action = this.actions.find((a: Action) => {
-				return a.title === name;
-			}) as Action;
-			this.actions.forEach((a: Action) => {
-				document.getElementById(a?.container)?.classList.add('esri-hidden');
-			});
-			this.activeWidget = action?.widget;
-			action.widget.container = action?.container;
-
-			document.getElementById(action?.container)?.classList.remove('esri-hidden');
-			const heading: HTMLElement = document.getElementById(this.side + 'PanelHeading') as HTMLElement;
-			heading.innerText = action?.title;
-			//document.getElementById(action?.container)?.classList.remove('esri-hidden');
+			const name = (evt.target as HTMLElement).getAttribute('name') as string;
+			this.viewModel.changePanel(name);
 		});
 	};
 	panelCreated = (): void => {
@@ -86,7 +77,7 @@ export default class ActionBar extends Widget {
 					intl-close="Close"
 					theme="light"
 					dismissible
-					dismissed
+					dismissed={this.side === 'left'}
 				>
 					<h3 class="heading" slot="header-content" id={this.side + 'PanelHeading'}></h3>
 					<calcite-action

@@ -6,5 +6,6 @@ export default class ActionBarViewModel extends Accessor {
     actions: Action[];
     constructor(params?: unknown);
     actionsLoaded(): void;
+    changePanel: (name: string) => void;
     init(view: esri.MapView | esri.SceneView): void;
 }
