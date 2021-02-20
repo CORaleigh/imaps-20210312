@@ -69,3 +69,47 @@ body {
   flex-direction: row;
 }
 
+@media only screen and (max-width: 500px) {
+  .esri-ui-bottom-left .esri-expand {
+    display: none;
+  }
+
+  .panel {
+   max-width: calc(100% - 48px);
+   z-index: 10;
+   position: absolute;
+   right: 48px;
+   top: 69px;
+   height: calc(100% - 68px);
+  }
+h3 {
+  margin: 5px 0 5px 0;
+}
+  .maximize {
+    display: none;
+  }
+  body {
+    font-size: 16px;
+  }
+  input, select { font-size: 16px !important;}
+  .esri-search {
+    font-size: 16px !important;
+  }
+  .esri-search {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  calcite-tip-manager {
+    position: absolute;
+    left: 1em;
+    right: 1em;
+    bottom: 0;
+    margin: 1em;
+    max-width: 100%;
+    z-index: 12;
+  }  
+  #overviewDiv {
+    max-width: 250px;
+  }
+}

@@ -9,7 +9,6 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import ActionBarViewModel from './ActionBar/ActionBarViewModel';
 import './ActionBar/styles/ActonBar.scss';
-import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 
 export interface ActionBarProperties extends esri.WidgetProperties {
 	side?: string;

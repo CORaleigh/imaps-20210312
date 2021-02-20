@@ -4,7 +4,7 @@ import Accessor from '@arcgis/core/core/Accessor';
 
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 
-import { whenDefinedOnce, whenNot } from '@arcgis/core/core/watchUtils';
+import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
 
 @subclass('app.widgets.ActionBar.ActionBarViewModel')
 export default class ActionBarViewModel extends Accessor {

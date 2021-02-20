@@ -4,7 +4,9 @@
 }
 $include_RasterSymbologyEditor: false !default;
 
-
+#propertySearchDiv {
+  overflow: hidden;
+}
 
 calcite-tabs {
   height: calc(100% - 35px);
@@ -13,7 +15,9 @@ calcite-tabs {
 calcite-tab {
   height: 100%;
   position: absolute;
-  top: 118px;
+  top: 108px;
+  left: 0;
+  right: 0;
   height: calc(100% - 180px);
 }
 

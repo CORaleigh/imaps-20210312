@@ -12,7 +12,7 @@
 }
 
 calcite-action-bar {
-  min-width: 50px;
+  min-width: 48px;
 }
 
 calcite-panel[dismissed] {
@@ -21,7 +21,7 @@ calcite-panel[dismissed] {
 
 calcite-panel {
   min-width: 0px;
-  max-width: 350px;
+  max-width: calc(100% - 48px);
   height: 100%;
   width: 350px;
   max-height: 100%;

@@ -151,7 +151,7 @@ module.exports = function build(env, arg) {
    }),
 
       new HtmlWebPackPlugin({
-        title: 'ArcGIS Template Application',
+        title: 'iMAPS',
         template: './src/index.ejs',
         filename: './index.html',
         favicon: './src/assets/favicon.ico',
