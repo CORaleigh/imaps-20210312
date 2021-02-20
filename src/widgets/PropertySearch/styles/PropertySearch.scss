@@ -7,11 +7,14 @@ $include_RasterSymbologyEditor: false !default;
 
 
 calcite-tabs {
-  height: calc(100% - 40px);
+  height: calc(100% - 35px);
 }
 
 calcite-tab {
   height: 100%;
+  position: absolute;
+  top: 118px;
+  height: calc(100% - 180px);
 }
 
 #feature .esri-feature-media__item img {

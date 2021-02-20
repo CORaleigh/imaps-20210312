@@ -56,7 +56,6 @@ export default class ActionBar extends Widget {
 
 			document.getElementById(action?.container)?.classList.remove('esri-hidden');
 			const heading: HTMLElement = document.getElementById(this.side + 'PanelHeading') as HTMLElement;
-			debugger;
 			heading.innerText = action?.title;
 			//document.getElementById(action?.container)?.classList.remove('esri-hidden');
 		});

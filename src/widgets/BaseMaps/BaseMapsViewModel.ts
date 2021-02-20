@@ -25,19 +25,21 @@ export default class BaseMapsViewModel extends Accessor {
 		const propertyLayer: FeatureLayer = this.view.map.allLayers.find((layer) => {
 			return layer.type === 'feature' && layer.title === 'Property';
 		}) as FeatureLayer;
-		const newRenderer: esri.SimpleRenderer = (propertyLayer.renderer as esri.SimpleRenderer).clone() as esri.SimpleRenderer;
-		if (
-			basemap.title.toLowerCase().includes('dark') ||
-			basemap.title.toLowerCase().includes('night') ||
-			basemap.title.toLowerCase().includes('dark') ||
-			basemap.title.toLowerCase().startsWith('20') ||
-			basemap.title.toLowerCase().startsWith('19')
-		) {
-			(newRenderer.symbol as esri.SimpleFillSymbol).outline.color = new Color([255, 255, 255, 0.5]);
-		} else {
-			(newRenderer.symbol as esri.SimpleFillSymbol).outline.color = new Color([0, 0, 0, 0.5]);
+		if (propertyLayer.loaded) {
+			const newRenderer: esri.SimpleRenderer = (propertyLayer?.renderer as esri.SimpleRenderer)?.clone() as esri.SimpleRenderer;
+			if (
+				basemap.title.toLowerCase().includes('dark') ||
+				basemap.title.toLowerCase().includes('night') ||
+				basemap.title.toLowerCase().includes('dark') ||
+				basemap.title.toLowerCase().startsWith('20') ||
+				basemap.title.toLowerCase().startsWith('19')
+			) {
+				(newRenderer.symbol as esri.SimpleFillSymbol).outline.color = new Color([255, 255, 255, 0.5]);
+			} else {
+				(newRenderer.symbol as esri.SimpleFillSymbol).outline.color = new Color([0, 0, 0, 0.5]);
+			}
+			propertyLayer.renderer = newRenderer;
 		}
-		propertyLayer.renderer = newRenderer;
 	};
 
 	init(view: esri.MapView | esri.SceneView): void {

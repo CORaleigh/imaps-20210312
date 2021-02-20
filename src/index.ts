@@ -5,7 +5,8 @@ import { map } from './data/app';
 import MapView from '@arcgis/core//views/MapView';
 
 // widget utils
-import { initWidgets, select, propertySearch, layers, actionBar } from './widgets';
+import { initWidgets, select, propertySearch, actionBar } from './widgets';
+
 
 /**
  * Initialize application
@@ -14,7 +15,6 @@ export const view = new MapView({
 	container: 'viewDiv',
 	map,
 });
-
 view.when(initWidgets);
 view.when(() => {
 	view.on('hold', (e) => {
@@ -28,12 +28,10 @@ view.when(() => {
 	});
 	view.whenLayerView(propertyLayer)
 		.then(() => {
-			debugger;
 			document.querySelector('#mapLoader')?.toggleAttribute('active');
 			propertySearch.propertyLayer = propertyLayer as __esri.FeatureLayer;
 			//search by geometry after sketch creation in select widget
 			select.viewModel.watch('geometry', (geometry: __esri.Geometry) => {
-				
 				propertySearch.geometry = geometry;
 				// actionBar.actions.forEach((action: any) => {
 				// 	if (action.text === 'Search') {
