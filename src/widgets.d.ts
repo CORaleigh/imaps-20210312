@@ -1,7 +1,15 @@
 import ActionBar from './widgets/ActionBar';
 import PropertySearch from './widgets/PropertySearch';
 import Select from './widgets/Select';
+import Measure from './widgets/Measure';
+import Draw from './widgets/Draw';
+import Menu from './widgets/Menu';
 export declare let actionBar: ActionBar;
+export declare let toolbar: ActionBar;
 export declare let propertySearch: PropertySearch;
 export declare let select: Select;
+export declare let measurement: Measure;
+export declare let drawWidget: Draw;
+export declare let menu: Menu;
 export declare function initWidgets(view: __esri.MapView): __esri.MapView;
+export declare function loadLayout(): void;

@@ -102,7 +102,7 @@ export default class PropertySearchViewModel extends Accessor {
 	}
 
 	createFeatureTableLayer = (fields: esri.Field[], features: esri.Graphic[]): FeatureLayer => {
-		console.log(features);
+		// console.log(features);
 		return new FeatureLayer({
 			fields: fields,
 			source: features,
@@ -178,6 +178,7 @@ export default class PropertySearchViewModel extends Accessor {
 	};
 
 	searchComplete = (event: esri.SearchSearchCompleteEvent): void => {
+		debugger;
 		if (!this.searchWidget.viewModel.selectedSuggestion) {
 			const oids: number[] = [];
 
@@ -198,13 +199,11 @@ export default class PropertySearchViewModel extends Accessor {
 			}
 
 			let tableFeatures: Graphic[] = [];
-
 			this.condosTable.queryFeatures({ where: where, outFields: ['*'] }).then((result) => {
 				tableFeatures = result.features;
 				result.features.forEach((f) => {
 					oids.push(f.getObjectId());
 				});
-
 				if (
 					!this.searchWidget.activeSource ||
 					(this.searchWidget.activeSource as LayerSearchSource)?.searchFields.includes('ADDRESS')
@@ -278,44 +277,51 @@ export default class PropertySearchViewModel extends Accessor {
 				event.results[0].results.forEach((r) => {
 					oids.push(r.feature.getObjectId());
 				});
-				if (layer.layerId === 4) {
-					const relationship = layer.relationships.find((r) => {
-						return r.name === 'ADDRESSES_CONDO';
-					});
-					if (relationship && oids) {
-						layer
-							.queryRelatedFeatures({
-								relationshipId: relationship.id,
-								objectIds: oids,
-								outFields: ['*'],
-							})
-							.then((result) => {
-								const oids: number[] = [];
-								const features: Graphic[] = [];
-								for (const key in result) {
-									result[key].features.forEach((feature: esri.Graphic) => {
-										oids.push(feature.getAttribute('OBJECTID'));
-										features.push(feature);
-										feature.layer = this.condosTable;
-									});
-								}
-								this.getProperty(oids);
-								if (features.length > 1) {
-									this.feature.graphic = new Graphic();
-									document.querySelector('#detailsTabTitle')?.setAttribute('disabled', '');
-									document.querySelector('#listTabTitle')?.dispatchEvent(new MouseEvent('click'));
-									this.toggleContent('list');
-								} else {
-									this.setFeature(features[0], this.view as esri.MapView, [], oids);
-									this.toggleContent('details');
-								}
-
-								this.featureTable.layer = this.createFeatureTableLayer(
-									this.condosTable.fields,
-									features,
-								);
+				if (layer?.layerId === 4) {
+					// const relationship = layer.relationships.find((r) => {
+					// 	return r.name === 'ADDRESSES_CONDO';
+					// });
+					// if (relationship && oids) {
+					this.condosTable
+						.queryFeatures({
+							//relationshipId: relationship.id,
+							//objectIds: oids,
+							where: `${
+								(event.results[0].source as LayerSearchSource).name === 'Street Name'
+									? 'FULL_STREET_NAME'
+									: 'SITE_ADDRESS'
+							} = '${event.searchTerm}'`,
+							outFields: ['*'],
+						})
+						.then((result) => {
+							const oids: number[] = [];
+							const features: Graphic[] = [];
+							// for (const key in result) {
+							// 	result[key].features.forEach((feature: esri.Graphic) => {
+							// 		oids.push(feature.getAttribute('OBJECTID'));
+							// 		features.push(feature);
+							// 		feature.layer = this.condosTable;
+							// 	});
+							// }
+							result.features.forEach((feature: esri.Graphic) => {
+								oids.push(feature.getAttribute('OBJECTID'));
+								features.push(feature);
+								feature.layer = this.condosTable;
 							});
-					}
+							this.getProperty(oids);
+							if (features.length > 1) {
+								this.feature.graphic = new Graphic();
+								document.querySelector('#detailsTabTitle')?.setAttribute('disabled', '');
+								document.querySelector('#listTabTitle')?.dispatchEvent(new MouseEvent('click'));
+								this.toggleContent('list');
+							} else {
+								this.setFeature(features[0], this.view as esri.MapView, [], oids);
+								this.toggleContent('details');
+							}
+
+							this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, features);
+						});
+					//}
 				} else {
 					this.condosTable.queryFeatures({ objectIds: oids, outFields: ['*'] }).then((result) => {
 						const oids: number[] = [];
@@ -350,7 +356,7 @@ export default class PropertySearchViewModel extends Accessor {
 		const relationship = this.condosTable.relationships.find((r) => {
 			return r.name === 'CONDO_PHOTOS';
 		});
-		const oid = feature.getObjectId();
+		const oid = feature.getAttribute('OBJECTID');
 		mediaInfos = [];
 		this.condosTable
 			.queryRelatedFeatures({ relationshipId: relationship?.id, objectIds: oids, outFields: ['*'] })
@@ -572,78 +578,95 @@ export default class PropertySearchViewModel extends Accessor {
 			geometryType: 'point',
 			objectIdField: 'OBJECTID',
 			spatialReference: this.view.spatialReference,
+			listMode: 'hide',
+			legendEnabled: false,
+			visible: false,
 		});
-		this.feature = new Feature({ view: this.view });
-
-		this.featureTable = new FeatureTable({
-			view: this.view,
-			layer: tableLayer,
-			fieldConfigs: [
-				new FieldColumnConfig({
-					name: 'SITE_ADDRESS',
-					label: 'Address',
-					editable: false,
-					required: true,
-				}),
-				new FieldColumnConfig({
-					name: 'OWNER',
-					label: 'Owner',
-					editable: false,
-					required: true,
-				}),
-				new FieldColumnConfig({
-					name: 'PIN_NUM',
-					label: 'PIN',
-					editable: false,
-					required: true,
-				}),
-				new FieldColumnConfig({
-					name: 'REID',
-					label: 'REID',
-					editable: false,
-					required: true,
-				}),
-			],
-			menuConfig: {
-				items: [
-					({
-						label: 'Export',
-					} as unknown) as MenuButtonItem,
-				],
-			},
-		});
-		// this.featureTable.watch('viewModel.state', (state: string) => {
-		//   if (state === 'ready') {
-		//     const style: HTMLStyleElement = document.createElement('style');
-		//     style.append(
-		//       document.createTextNode(
-		//         'td, th, table { background-color: #353535 !important;color: #fff;} td[role="gridcell"],th[role="columnheader"]{border-color: white !important;}'
-		//       )
-		//     );
-		//     document?.querySelector('.esri-feature-table .esri-grid__grid')?.shadowRoot?.append(style);
-		//   }
-		// });
-		const button: MenuButtonItem = this.featureTable?.menuConfig?.items?.find((item) => {
-			return item.label === 'Export';
-		}) as MenuButtonItem;
-		button.clickFunction = () => {
-			this.exportTable();
-		};
-		button.clickFunction.bind(this.featureTable);
-
-		this.featureTable.on('selection-change', (event) => {
-			(this.featureTable as any).clearSelection();
-			if (event.added.length) {
-				this.getProperty([event.added[0].feature.getAttribute('OBJECTID')], 'table');
-				this.setFeature(
-					event.added[0].feature,
-					this.view as esri.MapView,
-					[],
-					[event.added[0].feature.getAttribute('OBJECTID')],
+		this.view.map.add(tableLayer);
+		this.view.whenLayerView(tableLayer).then(() => {
+			this.feature = new Feature({ view: this.view, container: 'featureDiv' });
+			const fieldConfigs: FieldColumnConfig[] = [];
+			this.condosTable.fields.forEach((field) => {
+				fieldConfigs.push(
+					new FieldColumnConfig({
+						name: field.name,
+						label: field.alias,
+						editable: false,
+						visible: ['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'REID'].includes(field.name),
+					}),
 				);
-				event.added[0].feature.setAttribute('selected', 'true');
-				this.toggleContent('details');
-			}
+			});
+			this.featureTable = new FeatureTable({
+				view: this.view,
+				layer: tableLayer,
+				fieldConfigs: fieldConfigs, //[
+				// 	new FieldColumnConfig({
+				// 		name: 'SITE_ADDRESS',
+				// 		label: 'Address',
+				// 		editable: false,
+				// 		required: true,
+				// 	}),
+				// 	new FieldColumnConfig({
+				// 		name: 'OWNER',
+				// 		label: 'Owner',
+				// 		editable: false,
+				// 		required: true,
+				// 	}),
+				// 	new FieldColumnConfig({
+				// 		name: 'PIN_NUM',
+				// 		label: 'PIN',
+				// 		editable: false,
+				// 		required: true,
+				// 	}),
+				// 	new FieldColumnConfig({
+				// 		name: 'REID',
+				// 		label: 'REID',
+				// 		editable: false,
+				// 		required: true,
+				// 	}),
+				// ],
+				menuConfig: {
+					items: [
+						({
+							label: 'Export',
+						} as unknown) as MenuButtonItem,
+					],
+				},
+				container: 'table',
+			});
+			// this.featureTable.watch('viewModel.state', (state: string) => {
+			//   if (state === 'ready') {
+			//     const style: HTMLStyleElement = document.createElement('style');
+			//     style.append(
+			//       document.createTextNode(
+			//         'td, th, table { background-color: #353535 !important;color: #fff;} td[role="gridcell"],th[role="columnheader"]{border-color: white !important;}'
+			//       )
+			//     );
+			//     document?.querySelector('.esri-feature-table .esri-grid__grid')?.shadowRoot?.append(style);
+			//   }
+			// });
+			const button: MenuButtonItem = this.featureTable?.menuConfig?.items?.find((item) => {
+				return item.label === 'Export';
+			}) as MenuButtonItem;
+			button.clickFunction = () => {
+				this.exportTable();
+			};
+			button.clickFunction.bind(this.featureTable);
+
+			this.featureTable.on('selection-change', (event) => {
+				(this.featureTable as any).clearSelection();
+				if (event.added.length) {
+					this.getProperty([event.added[0].feature.getAttribute('OBJECTID')], 'table');
+					this.setFeature(
+						event.added[0].feature,
+						this.view as esri.MapView,
+						[],
+						[event.added[0].feature.getAttribute('OBJECTID')],
+					);
+					event.added[0].feature.setAttribute('selected', 'true');
+					this.toggleContent('details');
+				}
+			});
 		});
 		this.searchWidget = new Search({
 			allPlaceholder: 'Address, owner, PIN, or REID',

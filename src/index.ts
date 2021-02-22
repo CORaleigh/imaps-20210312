@@ -5,8 +5,7 @@ import { map } from './data/app';
 import MapView from '@arcgis/core//views/MapView';
 
 // widget utils
-import { initWidgets, select, propertySearch, actionBar } from './widgets';
-
+import { initWidgets, loadLayout, select, propertySearch } from './widgets';
 
 /**
  * Initialize application
@@ -15,6 +14,12 @@ export const view = new MapView({
 	container: 'viewDiv',
 	map,
 });
+const link = document.createElement('link');
+link.href = './assets/esri/themes/light/main.css';
+link.setAttribute('rel', 'stylesheet');
+link.setAttribute('type', 'text/css');
+document.querySelector('head')?.append(link);
+loadLayout();
 view.when(initWidgets);
 view.when(() => {
 	view.on('hold', (e) => {
@@ -26,6 +31,7 @@ view.when(() => {
 	const propertyLayer = map.allLayers.find((layer) => {
 		return layer.title === 'Property' && layer.type === 'feature';
 	});
+
 	view.whenLayerView(propertyLayer)
 		.then(() => {
 			document.querySelector('#mapLoader')?.toggleAttribute('active');

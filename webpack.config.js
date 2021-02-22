@@ -67,11 +67,12 @@ module.exports = function build(env, arg) {
                 options: {
                     sourceMap: true,
                 },
+                
             },
         ],
         }, {
           test: /\.css$/,
-          include: path.resolve(__dirname, 'src'),
+          include: [path.resolve(__dirname, 'src'),],
           exclude: /node_modules/,
           use: [
             {
@@ -82,7 +83,7 @@ module.exports = function build(env, arg) {
               options: {
                 importLoaders: 1,
               },
-            }
+            }   
           ],
         },
       ],

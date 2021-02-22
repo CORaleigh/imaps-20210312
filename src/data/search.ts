@@ -4,7 +4,7 @@ import PopupTemplate from '@arcgis/core/PopupTemplate';
 import ExpressionInfo from '@arcgis/core/popup/ExpressionInfo';
 import CustomContent from '@arcgis/core/popup/content/CustomContent';
 import Locator from '@arcgis/core/tasks/Locator';
-import geodesicUtils from '@arcgis/core/geometry/support/geodesicUtils';
+import * as geodesicUtils from '@arcgis/core/geometry/support/geodesicUtils';
 import Feature from '@arcgis/core/widgets/Feature';
 import { view } from '../index';
 

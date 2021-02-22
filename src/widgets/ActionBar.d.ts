@@ -14,9 +14,7 @@ export default class ActionBar extends Widget {
     actions: Action[];
     title: string;
     viewModel: ActionBarViewModel;
-    activeWidget: any;
     constructor(properties?: ActionBarProperties);
-    actionBarCreated: (elm: HTMLElement) => void;
     panelCreated: () => void;
     render(): tsx.JSX.Element;
 }

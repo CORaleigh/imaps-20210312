@@ -31,6 +31,7 @@ export default class SelectViewModel extends Accessor {
 	initSketch() {
 		this.graphics = new GraphicsLayer({ listMode: 'hide' });
 		this.view.map.add(this.graphics);
+
 		this.sketch = new Sketch({
 			view: this.view,
 			container: 'selectWidget',

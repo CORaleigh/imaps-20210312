@@ -27,3 +27,18 @@ calcite-panel {
   max-height: 100%;
 }
 
+#rightActionBar .tool {
+  display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+  #leftActionBar {
+    display: none;
+  }
+  #leftPanel {
+    display: none;
+  }
+  #rightActionBar .tool {
+    display: block;
+  }  
+}

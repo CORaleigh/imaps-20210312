@@ -39,7 +39,9 @@ export default class Select extends Widget {
 	viewModel: SelectViewModel = new SelectViewModel();
 	_sketchCreated = () => {
 		if (!this.viewModel.sketch) {
-			this.viewModel.initSketch();
+			setTimeout(() => {
+				this.viewModel.initSketch();
+			}, 1000);
 		}
 	};
 	constructor(properties?: SelectProperties) {
@@ -56,7 +58,7 @@ export default class Select extends Widget {
 
 		return (
 			<div class={CSS.base}>
-				<div afterUpdate={this._sketchCreated} id="selectWidget"></div>
+				<div afterCreate={this._sketchCreated} id="selectWidget"></div>
 				<calcite-label scale="s">
 					Buffer Distance (feet)
 					<calcite-input

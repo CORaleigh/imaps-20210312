@@ -16,25 +16,14 @@ export default class ActionBarViewModel extends Accessor {
 	constructor(params?: unknown) {
 		super(params);
 		whenDefinedOnce(this, 'view', this.init.bind(this));
-		whenDefinedOnce(this, 'actions', this.actionsLoaded.bind(this));
+		//whenDefinedOnce(this, 'actions', this.actionsLoaded.bind(this));
 	}
-
-	actionsLoaded(): void {
-		console.log(document.querySelectorAll('calcite-action'));
-		document.querySelectorAll('calcite-action').forEach((action) => {
-			action.addEventListener('click', (evt) => {
-				console.log(evt);
-			});
-		});
-		setTimeout(() => {
-			this.changePanel('Property Search');
-		});
-	}
-	@property() changePanel = (name: string): void => {
+	changePanel = (name: string): void => {
 		const action: Action = this.actions.find((a: Action) => {
 			return a.title === name;
 		}) as Action;
 		if (action?.widget) {
+			document.getElementById(this.side + 'Panel')?.removeAttribute('dismissed');
 			this.actions.forEach((a: Action) => {
 				document.getElementById(a?.container)?.classList.add('esri-hidden');
 			});
@@ -44,6 +33,24 @@ export default class ActionBarViewModel extends Accessor {
 			const heading: HTMLElement = document.getElementById(this.side + 'PanelHeading') as HTMLElement;
 			heading.innerText = action?.title;
 		}
+	};
+	actionsLoaded = (elm: HTMLElement): void => {
+		elm.addEventListener('click', (evt) => {
+			const name = (evt.target as HTMLElement).getAttribute('name') as string;
+			this.changePanel(name);
+			if (window.innerWidth >= 1000) {
+				document.querySelectorAll('#rightPanel .tool-container').forEach((container) => {
+					document.querySelector('#leftPanel')?.append(container);
+				});
+			} else {
+				document.querySelectorAll('#leftPanel .tool-container').forEach((container) => {
+					document.querySelector('#rightPanel')?.append(container);
+				});
+			}
+		});
+		setTimeout(() => {
+			this.changePanel('Property Search');
+		});
 	};
 
 	init(view: esri.MapView | esri.SceneView): void {

@@ -3,5 +3,5 @@ declare type Action = {
     icon: string;
     widget: any;
     container: string;
-    active: boolean;
+    tool: boolean;
 };

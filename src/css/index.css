@@ -4,7 +4,6 @@
   --white: #fff;
 }
 
-@import '~@arcgis/core//assets/esri/themes/light/main.css';
 
 html, body {
   height: 100%;
@@ -64,7 +63,7 @@ body {
 }
 #container {
   width: 100%;
-  height: calc(100% - 68px);
+  height: calc(100% - 52.84px);
   display: flex;
   flex-direction: row;
 }
@@ -80,7 +79,7 @@ body {
    position: absolute;
    right: 48px;
    top: 69px;
-   height: calc(100% - 68px);
+   height: calc(100% - 52.84px);
   }
 h3 {
   margin: 5px 0 5px 0;
