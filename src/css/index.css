@@ -112,3 +112,27 @@ h3 {
     max-width: 250px;
   }
 }
+
+.esri-icon-visible:before {
+  content: "\e611" !important;
+  color: inherit !important;
+}
+
+.esri-icon-non-visible:before {
+content: "\e610" !important;
+color: inherit !important;
+}
+
+#search-suggest-menu {
+  z-index: 10000 !important;
+}
+
+article:focus {
+  outline: none;
+}
+.esri-legend__message {
+  display: none;
+}
+
+
+@keyframes arrowmove {0% {bottom: 34px; opacity: 1;} 33% {bottom: 24px; opacity: 1;} 67% {bottom: 24px; opacity: 1;} 100% {bottom: 24px; opacity: 0;}}

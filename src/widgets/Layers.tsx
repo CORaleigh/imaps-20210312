@@ -9,7 +9,7 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import LayersViewModel from './Layers/LayersViewModel';
 import WebMap from '@arcgis/core/WebMap';
-
+import './Layers/styles/Layers.scss';
 export interface LayersProperties extends esri.WidgetProperties {
 	name?: string;
 	view?: esri.MapView | esri.SceneView;

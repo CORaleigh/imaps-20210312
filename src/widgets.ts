@@ -97,7 +97,7 @@ export function initWidgets(view: __esri.MapView) {
 }
 export function loadLayout(): void {
 	menu = new Menu({ container: 'menu' });
-	debugger;
+
 	toolbar = new ActionBar({
 		container: 'leftbar',
 		side: 'left',

@@ -178,7 +178,7 @@ export default class PropertySearchViewModel extends Accessor {
 	};
 
 	searchComplete = (event: esri.SearchSearchCompleteEvent): void => {
-		debugger;
+		
 		if (!this.searchWidget.viewModel.selectedSuggestion) {
 			const oids: number[] = [];
 

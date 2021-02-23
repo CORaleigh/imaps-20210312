@@ -59,24 +59,21 @@ export default class ActionBar extends Widget {
 	// });
 	// };
 	panelCreated = (): void => {
-		// const observer: MutationObserver = new MutationObserver((mutations) => {
-		// 	mutations.forEach((mutation) => {
-		// 		(mutation.addedNodes[0] as HTMLElement)
-		// 			.querySelector('.content-container')
-		// 			?.setAttribute('style', 'height:100%;');
-
-		// 		document.querySelectorAll('calcite-panel .heading').forEach((elm: Element) => {
-		// 			elm.setAttribute('style', 'margin: 0');
-		// 		});
-		// 		//(mutation.addedNodes[0] as HTMLElement).innerHTML +=
-		// 		//	'<style>.content-container { height: 100%; } .container:focus, .content-container:focus { outline: none; }</style>';
-		// 	});
-		// });
-
-		// document.querySelectorAll('calcite-panel').forEach((item) => {
-		// 	observer.observe(item?.shadowRoot as Node, { childList: true });
-		// });
-		document.querySelector('.content-container')?.setAttribute('style', 'height:100%;');
+		const observer: MutationObserver = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				(mutation.addedNodes[0] as HTMLElement)
+					.querySelector('.content-container')
+					?.setAttribute('style', 'height:100%;');
+				//(mutation.addedNodes[0] as HTMLElement).innerHTML +=
+				//	'<style>.content-container { height: 100%; } .container:focus, .content-container:focus { outline: none; }</style>';
+			});
+			observer.disconnect();
+		});
+		document.querySelectorAll('calcite-panel').forEach((item) => {
+			observer.observe(item?.shadowRoot as Node, { childList: true });
+			//debugger;
+			//const container = item?.shadowRoot?.querySelector('.content-container')?.setAttribute('style', 'height:100%;');
+		});
 
 		document.querySelectorAll('calcite-panel .heading').forEach((elm: Element) => {
 			elm.setAttribute('style', 'margin: 0');
@@ -107,6 +104,7 @@ export default class ActionBar extends Widget {
 					theme="light"
 					dismissible
 					dismissed
+					afterCreate={this.panelCreated}
 				>
 					<h3 class="heading" slot="header-content" id={this.side + 'PanelHeading'}></h3>
 					<calcite-action
@@ -121,7 +119,6 @@ export default class ActionBar extends Widget {
 								<div
 									id={action.container}
 									key={action.container}
-									afterCreate={this.panelCreated}
 									class={action.tool ? 'panel-container tool-container' : 'panel-container'}
 								></div>
 							);

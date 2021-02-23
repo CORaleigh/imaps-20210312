@@ -2,6 +2,7 @@ import esri = __esri;
 import { tsx } from '@arcgis/core/widgets/support/widget';
 import Widget from '@arcgis/core/widgets/Widget';
 import LayersViewModel from './Layers/LayersViewModel';
+import './Layers/styles/Layers.scss';
 export interface LayersProperties extends esri.WidgetProperties {
     name?: string;
     view?: esri.MapView | esri.SceneView;

@@ -1,5 +1,5 @@
 .select-base {
-  padding: 2rem;
+  padding: 0;
 }
 
 .select-base .esri-sketch__section.esri-sketch__tool-section:nth-child(1) {
@@ -7,4 +7,8 @@
 }
 .select-base .esri-sketch__section.esri-sketch__tool-section:nth-child(3) {
   display: none !important;
+}
+
+#selectWidget {
+  min-height: 44px;
 }

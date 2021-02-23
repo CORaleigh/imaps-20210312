@@ -1,4 +1,4 @@
-import MapView from '@arcgis/core//views/MapView';
+import MapView from '@arcgis/core/views/MapView';
 /**
  * Initialize application
  */

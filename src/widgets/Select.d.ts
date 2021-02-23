@@ -3,6 +3,7 @@ import { tsx } from '@arcgis/core/widgets/support/widget';
 import Widget from '@arcgis/core/widgets/Widget';
 import Measurement from '@arcgis/core/widgets/Measurement';
 import SelectViewModel from './Select/SelectViewModel';
+import './Select/styles/Select.scss';
 export interface SelectProperties extends esri.WidgetProperties {
     name?: string;
     view?: esri.MapView | esri.SceneView;
