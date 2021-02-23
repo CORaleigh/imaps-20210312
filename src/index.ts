@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Map data
 import { map } from './data/app';
 
@@ -6,8 +7,6 @@ import MapView from '@arcgis/core/views/MapView';
 
 // widget utils
 import { initWidgets, loadLayout, select, propertySearch } from './widgets';
-//declare module '@esri/calcite-components/dist/calcite/calcite.js';
-
 /**
  * Initialize application
  */
