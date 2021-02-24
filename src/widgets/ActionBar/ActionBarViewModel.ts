@@ -4,21 +4,24 @@ import Accessor from '@arcgis/core/core/Accessor';
 
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 
-import { whenDefinedOnce } from '@arcgis/core/core/watchUtils';
-
+import { watch, whenDefinedOnce } from '@arcgis/core/core/watchUtils';
+import { Action } from '../../types/action';
+import TipManager from '../TipManager';
 @subclass('app.widgets.ActionBar.ActionBarViewModel')
 export default class ActionBarViewModel extends Accessor {
 	@property() view!: esri.MapView | esri.SceneView;
 
 	@property() side = '';
 	@property() actions: Action[] = [];
-
+	tipManager!: TipManager;
 	constructor(params?: unknown) {
 		super(params);
 		whenDefinedOnce(this, 'view', this.init.bind(this));
-		//whenDefinedOnce(this, 'actions', this.actionsLoaded.bind(this));
 	}
 	changePanel = (name: string): void => {
+		if (!document.querySelector('calcite-tip-manager')?.getAttribute('closed')) {
+			document.querySelector('calcite-tip-manager')?.setAttribute('closed', '');
+		}
 		const action: Action = this.actions.find((a: Action) => {
 			return a.title === name;
 		}) as Action;
@@ -32,8 +35,36 @@ export default class ActionBarViewModel extends Accessor {
 			document.getElementById(action?.container)?.classList.remove('esri-hidden');
 			const heading: HTMLElement = document.getElementById(this.side + 'PanelHeading') as HTMLElement;
 			heading.innerText = action?.title;
+			const tipManager = document.querySelector('calcite-tip-manager');
+			(tipManager as HTMLElement).innerHTML = '';
+			action.tips.forEach((tip) => {
+				const tipElm = document.createElement('calcite-tip');
+				tipElm.setAttribute('heading', tip.title);
+				tipElm.innerHTML = tip.description;
+				tipManager?.appendChild(tipElm);
+			});
+			if (action?.tips.length > 0) {
+				document.querySelector(`#${this.side}Tip`)?.classList.remove('esri-hidden');
+			} else {
+				document.querySelector(`#${this.side}Tip`)?.classList.add('esri-hidden');
+			}
 		}
 	};
+	tipButtonCreated = (elm: HTMLElement): void => {
+		elm?.addEventListener('click', () => {
+			document.querySelector('calcite-tip-manager')?.removeAttribute('closed');
+		});
+	};
+	actionBarCreated = (): void => {
+		watch(this, 'actions', this.initActions.bind(this));
+	};
+
+	initActions(): void {
+		setTimeout(() => {
+			this.changePanel('Property Search');
+		});
+	}
+
 	actionsLoaded = (elm: HTMLElement): void => {
 		elm.addEventListener('click', (evt) => {
 			const name = (evt.target as HTMLElement).getAttribute('name') as string;
@@ -47,9 +78,6 @@ export default class ActionBarViewModel extends Accessor {
 					document.querySelector('#rightPanel')?.append(container);
 				});
 			}
-		});
-		setTimeout(() => {
-			this.changePanel('Property Search');
 		});
 	};
 

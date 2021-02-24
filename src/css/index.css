@@ -106,7 +106,7 @@ h3 {
     bottom: 0;
     margin: 1em;
     max-width: 100%;
-    z-index: 12;
+    z-index: 1000;
   }  
   #overviewDiv {
     max-width: 250px;
@@ -136,3 +136,45 @@ article:focus {
 
 
 @keyframes arrowmove {0% {bottom: 34px; opacity: 1;} 33% {bottom: 24px; opacity: 1;} 67% {bottom: 24px; opacity: 1;} 100% {bottom: 24px; opacity: 0;}}
+
+
+
+calcite-panel::part(container) {
+  height: 100%;
+}
+
+calcite-panel::part(container):focus {
+  outline: none;
+
+}
+
+calcite-panel::part(container):focus {
+  outline: none;
+}
+
+
+.dark ::part(content) {
+  background-color: #353535;
+  color: white;
+}
+
+
+.dark ::part(cell) {
+  background-color: #353535;
+  border-color: rgba(173, 173, 173, 0.3);
+  color: rgb(209, 209, 209);
+}
+
+.dark ::part(checkbox) {
+  background-color: rgb(209, 209, 209);
+}
+
+.dark ::part(indicators)::before {
+  opacity: .8;
+}
+
+
+.dark .esri-grid__grid {
+  background-color: rgb(36, 36, 36);
+}
+

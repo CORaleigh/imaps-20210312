@@ -8,7 +8,7 @@ import { renderable, tsx } from '@arcgis/core/widgets/support/widget';
 import Widget from '@arcgis/core/widgets/Widget';
 
 import LocationSearchViewModel from './LocationSearch/LocationSearchViewModel';
-
+import './LocationSearch/styles/LocationSearch.scss';
 export interface LocationSearchProperties extends esri.WidgetProperties {
 	name?: string;
 	view?: esri.MapView | esri.SceneView;

@@ -33,6 +33,10 @@ export default class Menu extends Widget {
 		document.querySelector('calcite-dropdown')?.addEventListener('calciteDropdownSelect', (e: any) => {
 			const value: string = e.currentTarget.selectedItems[0]?.innerHTML.toLowerCase();
 			this.theme = value;
+			document.body.classList.remove(value == 'light' ? 'dark' : 'light');
+
+			document.body.classList.add(value);
+
 			const style = Array.prototype.slice.call(document.querySelectorAll('link')).find((link) => {
 				return link.href.includes('light') || link.href.includes('dark');
 			});

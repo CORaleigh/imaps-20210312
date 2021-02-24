@@ -14,10 +14,10 @@ export default class PropertySearchViewModel extends Accessor {
     geometry: esri.Geometry;
     detailsDisabled: boolean;
     clusterPoints: FeatureLayer;
+    selectedProperty: esri.Graphic;
     graphics: esri.GraphicsLayer;
     singleSymbol: esri.SimpleFillSymbol;
     multiSymbol: esri.SimpleFillSymbol;
-    selectedProperty: esri.Graphic;
     constructor(params?: any);
     searchByGeometry(geometry: esri.Geometry): void;
     createFeatureTableLayer: (fields: esri.Field[], features: esri.Graphic[]) => FeatureLayer;

@@ -21,14 +21,14 @@ export default class PropertySearchViewModel extends Accessor {
 	@property() condosTable!: esri.FeatureLayer;
 	@property() addressTable!: esri.FeatureLayer;
 	@property() propertyLayer!: esri.FeatureLayer;
-
 	@property() searchWidget!: esri.widgetsSearch;
 	@property() featureTable!: esri.FeatureTable;
 	@property() feature!: esri.Feature;
 	@property() geometry!: esri.Geometry;
 	@property() detailsDisabled = true;
-	clusterPoints!: FeatureLayer;
 
+	clusterPoints!: FeatureLayer;
+	selectedProperty!: esri.Graphic;
 	graphics = new GraphicsLayer({ id: 'property-select', listMode: 'hide', minScale: 19200 });
 	singleSymbol = new SimpleFillSymbol({
 		style: 'none',
@@ -40,9 +40,10 @@ export default class PropertySearchViewModel extends Accessor {
 		outline: { width: 2.5, color: [249, 243, 0, 1] },
 		color: [253, 46, 65, 0.25],
 	});
-	selectedProperty!: esri.Graphic;
+
 	constructor(params?: any) {
 		super(params);
+
 		whenDefinedOnce(this, 'view', this.init.bind(this));
 		whenDefinedOnce(this, 'condosTable', this.initSearch.bind(this));
 		whenDefined(this, 'geometry', this.searchByGeometry.bind(this));
@@ -80,6 +81,9 @@ export default class PropertySearchViewModel extends Accessor {
 						} else {
 							this.toggleContent('list');
 						}
+						document
+							.querySelector('calcite-action.action[name="Property Search"]')
+							?.dispatchEvent(new MouseEvent('click'));
 
 						this.graphics.removeAll();
 
@@ -102,7 +106,6 @@ export default class PropertySearchViewModel extends Accessor {
 	}
 
 	createFeatureTableLayer = (fields: esri.Field[], features: esri.Graphic[]): FeatureLayer => {
-		// console.log(features);
 		return new FeatureLayer({
 			fields: fields,
 			source: features,
@@ -178,7 +181,6 @@ export default class PropertySearchViewModel extends Accessor {
 	};
 
 	searchComplete = (event: esri.SearchSearchCompleteEvent): void => {
-		
 		if (!this.searchWidget.viewModel.selectedSuggestion) {
 			const oids: number[] = [];
 
@@ -278,14 +280,8 @@ export default class PropertySearchViewModel extends Accessor {
 					oids.push(r.feature.getObjectId());
 				});
 				if (layer?.layerId === 4) {
-					// const relationship = layer.relationships.find((r) => {
-					// 	return r.name === 'ADDRESSES_CONDO';
-					// });
-					// if (relationship && oids) {
 					this.condosTable
 						.queryFeatures({
-							//relationshipId: relationship.id,
-							//objectIds: oids,
 							where: `${
 								(event.results[0].source as LayerSearchSource).name === 'Street Name'
 									? 'FULL_STREET_NAME'
@@ -296,13 +292,6 @@ export default class PropertySearchViewModel extends Accessor {
 						.then((result) => {
 							const oids: number[] = [];
 							const features: Graphic[] = [];
-							// for (const key in result) {
-							// 	result[key].features.forEach((feature: esri.Graphic) => {
-							// 		oids.push(feature.getAttribute('OBJECTID'));
-							// 		features.push(feature);
-							// 		feature.layer = this.condosTable;
-							// 	});
-							// }
 							result.features.forEach((feature: esri.Graphic) => {
 								oids.push(feature.getAttribute('OBJECTID'));
 								features.push(feature);
@@ -321,7 +310,6 @@ export default class PropertySearchViewModel extends Accessor {
 
 							this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, features);
 						});
-					//}
 				} else {
 					this.condosTable.queryFeatures({ objectIds: oids, outFields: ['*'] }).then((result) => {
 						const oids: number[] = [];
@@ -435,8 +423,6 @@ export default class PropertySearchViewModel extends Accessor {
 			const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 			const link = document.createElement('a');
 			if (link.download !== undefined) {
-				// feature detection
-				// Browsers that support HTML5 download attribute
 				const url = URL.createObjectURL(blob);
 				link.setAttribute('href', url);
 				link.setAttribute('download', exportedFilenmae);
@@ -539,7 +525,6 @@ export default class PropertySearchViewModel extends Accessor {
 		startsWith: boolean,
 	) => {
 		const whereArray: string[] = [];
-		//test
 		searchFields.forEach((field) => {
 			if (startsWith) {
 				whereArray.push(`${field} LIKE '${params.suggestTerm.toUpperCase()}%'`);
@@ -596,6 +581,7 @@ export default class PropertySearchViewModel extends Accessor {
 					}),
 				);
 			});
+
 			this.featureTable = new FeatureTable({
 				view: this.view,
 				layer: tableLayer,
@@ -635,15 +621,15 @@ export default class PropertySearchViewModel extends Accessor {
 				container: 'table',
 			});
 			// this.featureTable.watch('viewModel.state', (state: string) => {
-			//   if (state === 'ready') {
-			//     const style: HTMLStyleElement = document.createElement('style');
-			//     style.append(
-			//       document.createTextNode(
-			//         'td, th, table { background-color: #353535 !important;color: #fff;} td[role="gridcell"],th[role="columnheader"]{border-color: white !important;}'
-			//       )
-			//     );
-			//     document?.querySelector('.esri-feature-table .esri-grid__grid')?.shadowRoot?.append(style);
-			//   }
+			// 	if (state === 'ready') {
+			// 		const style: HTMLStyleElement = document.createElement('style');
+			// 		style.append(
+			// 			document.createTextNode(
+			// 				'td, th, table { background-color: #353535 !important;color: #fff;} td[role="gridcell"],th[role="columnheader"]{border-color: white !important;}',
+			// 			),
+			// 		);
+			// 		document?.querySelector('.esri-feature-table .esri-grid__grid')?.shadowRoot?.append(style);
+			// 	}
 			// });
 			const button: MenuButtonItem = this.featureTable?.menuConfig?.items?.find((item) => {
 				return item.label === 'Export';
@@ -712,15 +698,6 @@ export default class PropertySearchViewModel extends Accessor {
 							}) as any;
 					},
 				} as LayerSearchSource),
-				// new LayerSearchSource({
-				//   layer: condosTable,
-				//   searchFields: ['OWNER'],
-				//   displayField: 'OWNER',
-				//   exactMatch: false,
-				//   outFields: ['OWNER', 'REID', 'OBJECTID'],
-				//   name: 'Owner',
-				//   placeholder: 'example: SMITH, JOHN'
-				// }),
 				new LayerSearchSource({
 					placeholder: 'example: SMITH, JOHN',
 					name: 'Owner',
@@ -751,15 +728,6 @@ export default class PropertySearchViewModel extends Accessor {
 							}) as any;
 					},
 				} as LayerSearchSource),
-				// new LayerSearchSource({
-				//   layer: condosTable,
-				//   searchFields: ['PIN_NUM'],
-				//   displayField: 'PIN_NUM',
-				//   exactMatch: false,
-				//   outFields: ['PIN_NUM', 'REID', 'OBJECTID'],
-				//   name: 'PIN',
-				//   placeholder: 'example: 0712345678'
-				// }),
 				new LayerSearchSource({
 					placeholder: 'PIN',
 					name: 'PIN',
@@ -790,15 +758,6 @@ export default class PropertySearchViewModel extends Accessor {
 							}) as any;
 					},
 				} as LayerSearchSource),
-				// new LayerSearchSource({
-				//   layer: condosTable,
-				//   searchFields: ['REID'],
-				//   displayField: 'REID',
-				//   exactMatch: false,
-				//   outFields: ['REID', 'OBJECTID'],
-				//   name: 'REID',
-				//   placeholder: 'example: 0123456'
-				// }),
 				new LayerSearchSource({
 					placeholder: 'REID',
 					name: 'REID',
@@ -867,19 +826,8 @@ export default class PropertySearchViewModel extends Accessor {
 
 	toggleContent = (value: string): void => {
 		if (value === 'list') {
-			// document.querySelector('#listTabTitle')?.setAttribute('active', '');
-			// document.querySelector('#listTab')?.setAttribute('active', '');
-			// document.querySelector('#detailsTabTitle')?.removeAttribute('active');
-			// document.querySelector('#detailsTab')?.removeAttribute('active');
 			document.querySelector('#detailsTabTitle')?.setAttribute('disabled', '');
 			document.querySelector('#listTabTitle')?.dispatchEvent(new MouseEvent('click'));
-		} else {
-			// document.querySelector('#detailsTabTitle')?.setAttribute('active', '');
-			// document.querySelector('#detailsTab')?.setAttribute('active', '');
-			// document.querySelector('#listTabTitle')?.removeAttribute('active');
-			// document.querySelector('#listTitle')?.removeAttribute('active');
-			// document.querySelector('#featureItem')?.setAttribute('checked', '');
-			// document.querySelector('#tableItem')?.removeAttribute('checked');
 		}
 	};
 }

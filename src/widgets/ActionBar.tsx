@@ -9,11 +9,13 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import ActionBarViewModel from './ActionBar/ActionBarViewModel';
 import './ActionBar/styles/ActonBar.scss';
-
+import { Action } from '../types/action';
+import TipManager from './TipManager';
 export interface ActionBarProperties extends esri.WidgetProperties {
 	side?: string;
 	actions?: Action[];
 	view?: esri.MapView | esri.SceneView;
+	tipManager?: TipManager;
 }
 
 const CSS = {
@@ -31,6 +33,8 @@ export default class ActionBar extends Widget {
 	actions: Action[] = [];
 	@aliasOf('viewModel.title')
 	title = '';
+	@aliasOf('viewModel.tipManager')
+	tipManager = null;
 
 	@property({
 		type: ActionBarViewModel,
@@ -41,7 +45,6 @@ export default class ActionBar extends Widget {
 	constructor(properties?: ActionBarProperties) {
 		super(properties);
 	}
-
 	//actionBarCreated = (elm: HTMLElement): void => {
 	// elm.addEventListener('click', (evt) => {
 	// 	document.getElementById(this.side + 'Panel')?.removeAttribute('dismissed');
@@ -61,17 +64,18 @@ export default class ActionBar extends Widget {
 	panelCreated = (): void => {
 		const observer: MutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
+				// (mutation.addedNodes[0] as HTMLElement)
+				// 	.querySelector('.content-container')
+				// 	?.setAttribute('style', 'height:100%;');
 				(mutation.addedNodes[0] as HTMLElement)
 					.querySelector('.content-container')
-					?.setAttribute('style', 'height:100%;');
-				//(mutation.addedNodes[0] as HTMLElement).innerHTML +=
-				//	'<style>.content-container { height: 100%; } .container:focus, .content-container:focus { outline: none; }</style>';
+					?.setAttribute('part', 'container');
 			});
 			observer.disconnect();
 		});
 		document.querySelectorAll('calcite-panel').forEach((item) => {
 			observer.observe(item?.shadowRoot as Node, { childList: true });
-			//debugger;
+			console.log(item?.shadowRoot?.innerHTML);
 			//const container = item?.shadowRoot?.querySelector('.content-container')?.setAttribute('style', 'height:100%;');
 		});
 
@@ -79,6 +83,32 @@ export default class ActionBar extends Widget {
 			elm.setAttribute('style', 'margin: 0');
 		});
 	};
+	// initTips = () => {
+	// 	document.querySelectorAll('.tip').forEach(item => {
+	// 	  item.addEventListener('click', () => {
+	// 		document.querySelector('calcite-tip-manager')?.remove();
+	// 		item.parentElement?.parentElement?.removeAttribute('dismissed');
+	// 		item.parentElement?.parentElement?.classList.remove('hidden');
+	// 		const manager = document.createElement('calcite-tip-manager');
+	// 		manager.setAttribute('theme', theme);
+	// 		const tipGroup = tipGroups.find(group => {
+	// 		  return group.panel.name === item.id;
+	// 		});
+
+	// 		const group = document.createElement('calcite-tip-group');
+	// 		group.setAttribute('text-group-title', (tipGroup as any)?.panel.title);
+	// 		manager.appendChild(group);
+	// 		tipGroup?.panel.tips.forEach(tip => {
+	// 		  const calciteTip = document.createElement('calcite-tip');
+	// 		  calciteTip.setAttribute('heading', tip.title);
+	// 		  const p = document.createElement('p');
+	// 		  p.innerHTML = tip.message;
+	// 		  calciteTip.appendChild(p);
+	// 		  group.appendChild(calciteTip);
+	// 		});
+	// 		document?.body?.appendChild(manager);
+	// 	  });
+	// 	});
 
 	render(): tsx.JSX.Element {
 		window.onresize = () => {
@@ -108,10 +138,13 @@ export default class ActionBar extends Widget {
 				>
 					<h3 class="heading" slot="header-content" id={this.side + 'PanelHeading'}></h3>
 					<calcite-action
+						id={`${this.side}Tip`}
+						class="tip-button"
 						text="Action"
 						label="Action"
 						slot="header-actions-end"
 						icon="lightbulb"
+						afterCreate={this.viewModel.tipButtonCreated}
 					></calcite-action>
 					{this.actions?.map((action: Action) => {
 						if ((this.side === 'right' && !action.tool) || (this.side === 'left' && action.tool)) {
@@ -133,6 +166,7 @@ export default class ActionBar extends Widget {
 					position="start"
 					theme="light"
 					calcite-hydrated=""
+					afterCreate={this.viewModel.actionBarCreated}
 					id={`${this.side}ActionBar`}
 				>
 					<calcite-action-group calcite-hydrated="">

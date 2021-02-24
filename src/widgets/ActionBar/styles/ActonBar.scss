@@ -31,6 +31,16 @@ calcite-panel {
   display: none;
 }
 
+calcite-tip-manager {
+  max-width: 100%;
+  width: 500px;
+  height: 300px;
+  position: absolute;
+  z-index: 1000;
+  top: 25%;
+  left: 25%;
+}
+
 @media only screen and (max-width: 1000px) {
   #leftActionBar {
     display: none;
