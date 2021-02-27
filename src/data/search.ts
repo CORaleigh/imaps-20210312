@@ -315,7 +315,7 @@ export const createTemplate = (view: __esri.MapView | __esri.SceneView): void =>
 				outFields: ['*'],
 				creator: (e: any) => {
 					return new Locator({
-						url: 'https://maps.raleighnc.gov/arcgis/rest/services/Locators/CompositeLocator/GeocodeServer',
+						url: 'https://maps.raleighnc.gov/arcgis/rest/services/Locators/Locator/GeocodeServer',
 						outSpatialReference: { wkid: 4326 },
 					})
 						.addressToLocations({
@@ -324,9 +324,10 @@ export const createTemplate = (view: __esri.MapView | __esri.SceneView): void =>
 						})
 						.then((candidates: __esri.AddressCandidate[]) => {
 							if (candidates.length) {
-								const candidate = candidates.find((candidate) => {
-									return candidate.attributes['Loc_name'] === 'WakeStreets';
-								});
+								// const candidate = candidates.find((candidate) => {
+								// 	return candidate.attributes['Loc_name'] === 'WakeStreets';
+								// });
+								const candidate = candidates[0];
 								if (candidate) {
 									const dist = geodesicUtils.geodesicDistance(candidate.location, {
 										x: (e.graphic.geometry as __esri.Polygon).centroid.longitude,

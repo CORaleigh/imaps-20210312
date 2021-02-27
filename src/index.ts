@@ -31,9 +31,6 @@ loadLayout().then(() => {
 		checkLocalStorage(view);
 		view.on('hold', (e) => {
 			propertySearch.geometry = e.mapPoint;
-			setTimeout(() => {
-				//toggleAction('Search');
-			}, 1000);
 		});
 		const propertyLayer = map.allLayers.find((layer) => {
 			return layer.title === 'Property' && layer.type === 'feature';

@@ -95,14 +95,14 @@ export default class PropertySearchViewModel extends Accessor {
 	createFeatureTableLayer = (fields: esri.Field[], features: esri.Graphic[]): FeatureLayer => {
 		// console.log(features);
 		//if (!this.featureTable.layer) {
-		return (this.featureTable.layer = new FeatureLayer({
+		return new FeatureLayer({
 			fields: fields,
 			source: features,
 			title: 'Selected properties',
-			geometryType: 'point',
+			geometryType: 'polygon',
 			objectIdField: 'OBJECTID',
 			spatialReference: this.view.spatialReference,
-		}));
+		});
 		//}
 
 		// this.featureTable.layer.queryObjectIds().then((ids: number[]) => {
@@ -479,7 +479,6 @@ export default class PropertySearchViewModel extends Accessor {
 					document.querySelector('#listTabTitle')?.dispatchEvent(new MouseEvent('click'));
 					this.toggleContent('list');
 				} else {
-					debugger;
 					this.setFeature(result.features[0], this.view as esri.MapView, [], oids);
 					this.toggleContent('details');
 				}
