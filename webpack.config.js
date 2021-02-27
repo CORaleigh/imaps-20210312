@@ -121,6 +121,7 @@ module.exports = function build(env, arg) {
         features: {
           "3d": false,
           userDefinedExcludes: [
+            "@arcgis/core/layers/PointCloudLayer",
             "@arcgis/core/layers/BingMapsLayer",
             "@arcgis/core/layers/CSVLayer",
             "@arcgis/core/layers/GeoRSSLayer",
@@ -147,8 +148,6 @@ module.exports = function build(env, arg) {
             "@arcgis/core/tasks/ImageServiceIdentifyTask",
             "@arcgis/core/tasks/RouteTask",
             "@arcgis/core/tasks/ServiceAreaTask",
-
-
           ]          
         }
    }),
