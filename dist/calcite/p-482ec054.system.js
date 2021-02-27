@@ -1,1 +1,1 @@
-System.register([],(function(t){"use strict";return{execute:function(){t("g",e);function e(t,e){return(t+e)%e}}}}));
+System.register([],(function(t){"use strict";return{execute:function(){t("g",(function(t,e){return(t+e)%e}))}}}));

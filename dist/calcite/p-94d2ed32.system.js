@@ -1,1 +1,1 @@
-System.register([],(function(r){"use strict";return{execute:function(){r("I",void 0);var e=r("C",{sticky:"sticky"});var i;(function(r){r["circle"]="circle";r["square"]="square";r["grip"]="grip"})(i||(i=r("I",{})))}}}));
+System.register([],(function(e){"use strict";return{execute:function(){e("I",void 0);var i;e("C",{sticky:"sticky"});!function(e){e.circle="circle",e.square="square",e.grip="grip"}(i||(i=e("I",{})))}}}));

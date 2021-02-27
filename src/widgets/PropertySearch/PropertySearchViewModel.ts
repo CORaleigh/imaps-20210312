@@ -93,14 +93,26 @@ export default class PropertySearchViewModel extends Accessor {
 	}
 
 	createFeatureTableLayer = (fields: esri.Field[], features: esri.Graphic[]): FeatureLayer => {
-		return new FeatureLayer({
+		// console.log(features);
+		//if (!this.featureTable.layer) {
+		return (this.featureTable.layer = new FeatureLayer({
 			fields: fields,
 			source: features,
 			title: 'Selected properties',
 			geometryType: 'point',
 			objectIdField: 'OBJECTID',
 			spatialReference: this.view.spatialReference,
-		});
+		}));
+		//}
+
+		// this.featureTable.layer.queryObjectIds().then((ids: number[]) => {
+		// 	this.featureTable.layer.applyEdits({ deleteFeatures: ids }).then(() => {
+		// 		this.featureTable.layer.applyEdits({ addFeatures: features }).then((e) => {
+		// 			debugger;
+		// 		});
+		// 	});
+		// });
+		// return this.featureTable.layer;
 	};
 	addClusterGraphics = (result: esri.FeatureSet): void => {
 		const points: Graphic[] = [];
@@ -467,6 +479,7 @@ export default class PropertySearchViewModel extends Accessor {
 					document.querySelector('#listTabTitle')?.dispatchEvent(new MouseEvent('click'));
 					this.toggleContent('list');
 				} else {
+					debugger;
 					this.setFeature(result.features[0], this.view as esri.MapView, [], oids);
 					this.toggleContent('details');
 				}
@@ -476,6 +489,7 @@ export default class PropertySearchViewModel extends Accessor {
 		}
 	};
 	init(view: esri.MapView | esri.SceneView) {
+		document.querySelector('calcite-action.action[name="Property Search"]')?.dispatchEvent(new MouseEvent('click'));
 		view.map.add(this.graphics, view.map.allLayers.length - 1);
 		this.clusterPoints = new FeatureLayer({
 			source: [],

@@ -1,1 +1,1 @@
-System.register([],(function(t){"use strict";return{execute:function(){var e=t("C",{rtl:"calcite--rtl"})}}}));
+System.register([],(function(t){"use strict";return{execute:function(){t("C",{rtl:"calcite--rtl"})}}}));
