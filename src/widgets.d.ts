@@ -17,4 +17,4 @@ export declare let printWidget: Print;
 export declare let bookmarks: Bookmarks;
 export declare let menu: Menu;
 export declare function initWidgets(view: __esri.MapView): MapView;
-export declare function loadLayout(): void;
+export declare function loadLayout(): Promise<any>;

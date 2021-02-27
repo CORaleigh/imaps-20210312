@@ -8,11 +8,11 @@ $include_RasterSymbologyEditor: false !default;
   overflow: hidden;
 }
 
-calcite-tabs {
+.propertysearch-base calcite-tabs {
   height: calc(100% - 35px);
 }
 
-calcite-tab {
+.propertysearch-base calcite-tab {
   height: 100%;
   position: absolute;
   top: 84px;

@@ -13,7 +13,6 @@ import LayerSearchSource from '@arcgis/core/widgets/Search/LayerSearchSource';
 import FieldColumnConfig from '@arcgis/core/widgets/FeatureTable/FieldColumnConfig';
 import MenuButtonItem from '@arcgis/core/widgets/FeatureTable/Grid/support/ButtonMenuItem';
 import { whenDefinedOnce, whenDefined } from '@arcgis/core/core/watchUtils';
-import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
 @subclass('app.widgets.PropertySearch.PropertySearchViewModel')
 export default class PropertySearchViewModel extends Accessor {
@@ -81,26 +80,14 @@ export default class PropertySearchViewModel extends Accessor {
 						} else {
 							this.toggleContent('list');
 						}
+						//change to property search panel on selection
 						document
 							.querySelector('calcite-action.action[name="Property Search"]')
 							?.dispatchEvent(new MouseEvent('click'));
-
-						this.graphics.removeAll();
-
-						const featureSet: FeatureSet = new FeatureSet({ features: [] });
-						propertyResult.features.forEach((feature: esri.Graphic) => {
-							feature.symbol = propertyResult.features.length > 1 ? this.multiSymbol : this.singleSymbol;
-
-							if (propertyResult.features.length === 1) {
-								feature.geometry = propertyResult.features[0].geometry;
-							}
-							this.graphics.add(feature);
-							featureSet.features.push(feature);
-						});
+						this.addGraphics(propertyResult);
 						this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, features);
 						this.featureTable.refresh();
-
-						this.addClusterGraphics(featureSet);
+						this.setClickOnTableRows();
 					});
 			});
 	}
@@ -182,12 +169,11 @@ export default class PropertySearchViewModel extends Accessor {
 
 	searchComplete = (event: esri.SearchSearchCompleteEvent): void => {
 		if (!this.searchWidget.viewModel.selectedSuggestion) {
+			//when enter is hit do wildcard search
 			const oids: number[] = [];
-
 			let where = '';
-
 			if (!this.searchWidget.activeSource) {
-				where = `OWNER like '_${event.searchTerm.toUpperCase()}%' OR REID like '${event.searchTerm.toUpperCase()}%' OR PIN_NUM like '${event.searchTerm.toUpperCase()}%'`;
+				where = `OWNER like '%${event.searchTerm.toUpperCase()}%' OR REID like '${event.searchTerm.toUpperCase()}%' OR PIN_NUM like '${event.searchTerm.toUpperCase()}%'`;
 			} else {
 				if ((this.searchWidget.activeSource as LayerSearchSource)?.searchFields.includes('OWNER')) {
 					where = `OWNER like '_%${event.searchTerm.toUpperCase()}%'`;
@@ -252,10 +238,12 @@ export default class PropertySearchViewModel extends Accessor {
 									this.toggleContent('details');
 								}
 								this.featureTable.renderNow();
+								this.setClickOnTableRows();
 							});
 					} else {
 						this.getProperty(oids);
 						this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, tableFeatures);
+						this.setClickOnTableRows();
 						if (tableFeatures.length > 1) {
 							this.feature.graphic = new Graphic();
 							document.querySelector('#detailsTabTitle')?.setAttribute('disabled', '');
@@ -267,6 +255,7 @@ export default class PropertySearchViewModel extends Accessor {
 				});
 			});
 		} else {
+			//suggestion selected
 			if (event.numResults) {
 				let layer = (event.results[0].source as LayerSearchSource).layer as FeatureLayer;
 				if (!layer && event.results[0].source.name === 'Owner') {
@@ -279,6 +268,7 @@ export default class PropertySearchViewModel extends Accessor {
 				event.results[0].results.forEach((r) => {
 					oids.push(r.feature.getObjectId());
 				});
+				//if address or street name selected
 				if (layer?.layerId === 4) {
 					this.condosTable
 						.queryFeatures({
@@ -309,8 +299,10 @@ export default class PropertySearchViewModel extends Accessor {
 							}
 
 							this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, features);
+							this.setClickOnTableRows();
 						});
 				} else {
+					//if reid, pin, or owner selected
 					this.condosTable.queryFeatures({ objectIds: oids, outFields: ['*'] }).then((result) => {
 						const oids: number[] = [];
 						result.features.forEach((feature: esri.Graphic) => {
@@ -332,10 +324,26 @@ export default class PropertySearchViewModel extends Accessor {
 							this.condosTable.fields,
 							result.features,
 						);
+						this.setClickOnTableRows();
 					});
 				}
 			}
 		}
+	};
+	setClickOnTableRows = () => {
+		setTimeout(() => {
+			document
+				.querySelector('.esri-feature-table')
+				?.querySelector('vaadin-grid')
+				?.shadowRoot?.querySelectorAll('tbody tr')
+				?.forEach((row) => {
+					row.addEventListener('click', (elm) => {
+						(elm?.target as HTMLElement)?.previousElementSibling?.firstElementChild?.shadowRoot
+							?.querySelector('label')
+							?.firstElementChild?.firstElementChild?.dispatchEvent(new MouseEvent('click'));
+					});
+				});
+		}, 2000);
 	};
 	setFeature(feature: esri.Graphic, view: esri.MapView, mediaInfos: any[], oids: number[]): void {
 		const params = new URL(document.location.href).searchParams;
@@ -463,6 +471,7 @@ export default class PropertySearchViewModel extends Accessor {
 					this.toggleContent('details');
 				}
 				this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, result.features);
+				this.setClickOnTableRows();
 			});
 		}
 	};
@@ -570,17 +579,40 @@ export default class PropertySearchViewModel extends Accessor {
 		this.view.map.add(tableLayer);
 		this.view.whenLayerView(tableLayer).then(() => {
 			this.feature = new Feature({ view: this.view, container: 'featureDiv' });
-			const fieldConfigs: FieldColumnConfig[] = [];
+			let fieldConfigs: FieldColumnConfig[] = [];
 			this.condosTable.fields.forEach((field) => {
 				fieldConfigs.push(
 					new FieldColumnConfig({
 						name: field.name,
 						label: field.alias,
 						editable: false,
-						visible: ['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'REID'].includes(field.name),
+						visible: ['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'PIN_EXT', 'REID'].includes(field.name),
 					}),
 				);
 			});
+			const ext = fieldConfigs.find((fc) => {
+				return fc.name === 'PIN_EXT';
+			}) as esri.FieldColumnConfig;
+			const pin = fieldConfigs.find((fc) => {
+				return fc.name === 'PIN_NUM';
+			}) as esri.FieldColumnConfig;
+			const reid = fieldConfigs.find((fc) => {
+				return fc.name === 'REID';
+			}) as esri.FieldColumnConfig;
+			const owner = fieldConfigs.find((fc) => {
+				return fc.name === 'OWNER';
+			}) as esri.FieldColumnConfig;
+			const address = fieldConfigs.find((fc) => {
+				return fc.name === 'SITE_ADDRESS';
+			}) as esri.FieldColumnConfig;
+			fieldConfigs = fieldConfigs.filter((fc) => {
+				return !['SITE_ADDRESS', 'OWNER', 'PIN_NUM', 'PIN_EXT', 'REID'].includes(fc.name);
+			});
+			fieldConfigs.unshift(ext);
+			fieldConfigs.unshift(pin);
+			fieldConfigs.unshift(reid);
+			fieldConfigs.unshift(owner);
+			fieldConfigs.unshift(address);
 
 			this.featureTable = new FeatureTable({
 				view: this.view,
@@ -631,6 +663,7 @@ export default class PropertySearchViewModel extends Accessor {
 			// 		document?.querySelector('.esri-feature-table .esri-grid__grid')?.shadowRoot?.append(style);
 			// 	}
 			// });
+
 			const button: MenuButtonItem = this.featureTable?.menuConfig?.items?.find((item) => {
 				return item.label === 'Export';
 			}) as MenuButtonItem;

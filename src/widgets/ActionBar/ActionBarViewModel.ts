@@ -13,6 +13,7 @@ export default class ActionBarViewModel extends Accessor {
 
 	@property() side = '';
 	@property() actions: Action[] = [];
+	title!: string;
 	tipManager!: TipManager;
 	constructor(params?: unknown) {
 		super(params);
@@ -35,6 +36,12 @@ export default class ActionBarViewModel extends Accessor {
 			document.getElementById(action?.container)?.classList.remove('esri-hidden');
 			const heading: HTMLElement = document.getElementById(this.side + 'PanelHeading') as HTMLElement;
 			heading.innerText = action?.title;
+
+			if (action.title === 'Property Search' && this.side === 'right') {
+				document.querySelector('#rightPanel.maximize')?.classList.remove('esri-hidden');
+			} else {
+				document.querySelector('#rightPanel.maximize')?.classList.add('esri-hidden');
+			}
 			const tipManager = document.querySelector('calcite-tip-manager');
 			(tipManager as HTMLElement).innerHTML = '';
 			action.tips.forEach((tip) => {

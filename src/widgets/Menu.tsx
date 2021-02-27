@@ -29,54 +29,66 @@ export default class Menu extends Widget {
 	@renderable()
 	viewModel: MenuViewModel = new MenuViewModel();
 
+	setTheme = (value: string): void => {
+		this.theme = value;
+		window.localStorage.setItem('theme', value);
+		document.body.classList.remove(value == 'light' ? 'dark' : 'light');
+
+		document.body.classList.add(value);
+
+		const style = Array.prototype.slice.call(document.querySelectorAll('link')).find((link) => {
+			return link.href.includes('light') || link.href.includes('dark');
+		});
+		if (style) {
+			style.remove();
+			const link = document.createElement('link');
+			link.href = './assets/esri/themes/' + this.theme + '/main.css';
+			link.setAttribute('rel', 'stylesheet');
+			link.setAttribute('type', 'text/css');
+			document.querySelector('head')?.append(link);
+			document.querySelectorAll('calcite-panel').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-color').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-tip-manager').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-dropdown').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-alert').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-modal').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-block').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			document.querySelectorAll('calcite-pick-list').forEach((item) => {
+				item.setAttribute('theme', this.theme);
+			});
+			setTimeout(() => {
+				document.querySelectorAll('calcite-action-bar').forEach((item) => {
+					item.setAttribute('theme', this.theme);
+				});
+			});
+		}
+	};
+
 	menuCreated = (): void => {
+		if (window.localStorage.getItem('theme')) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			const value: string = window.localStorage.getItem('theme')!;
+			setTimeout(() => {
+				this.setTheme(value);
+			});
+		}
 		document.querySelector('calcite-dropdown')?.addEventListener('calciteDropdownSelect', (e: any) => {
 			const value: string = e.currentTarget.selectedItems[0]?.innerHTML.toLowerCase();
-			this.theme = value;
-			document.body.classList.remove(value == 'light' ? 'dark' : 'light');
-
-			document.body.classList.add(value);
-
-			const style = Array.prototype.slice.call(document.querySelectorAll('link')).find((link) => {
-				return link.href.includes('light') || link.href.includes('dark');
-			});
-			if (style) {
-				style.remove();
-				const link = document.createElement('link');
-				link.href = './assets/esri/themes/' + this.theme + '/main.css';
-				link.setAttribute('rel', 'stylesheet');
-				link.setAttribute('type', 'text/css');
-				document.querySelector('head')?.append(link);
-				document.querySelectorAll('calcite-panel').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-color').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-tip-manager').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-dropdown').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-alert').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-modal').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-block').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				document.querySelectorAll('calcite-pick-list').forEach((item) => {
-					item.setAttribute('theme', this.theme);
-				});
-				setTimeout(() => {
-					document.querySelectorAll('calcite-action-bar').forEach((item) => {
-						item.setAttribute('theme', this.theme);
-					});
-				});
-			}
+			this.setTheme(value);
 		});
 	};
 	constructor(properties?: MenuProperties) {
@@ -116,8 +128,10 @@ export default class Menu extends Widget {
 							</calcite-dropdown-item>
 						</calcite-dropdown-group>
 						<calcite-dropdown-group group-title="Theme" selection-mode="single">
-							<calcite-dropdown-item value="dark">Dark</calcite-dropdown-item>
-							<calcite-dropdown-item active value="light">
+							<calcite-dropdown-item active={this.theme === 'dark'} value="dark">
+								Dark
+							</calcite-dropdown-item>
+							<calcite-dropdown-item active={this.theme === 'light'} value="light">
 								Light
 							</calcite-dropdown-item>
 						</calcite-dropdown-group>

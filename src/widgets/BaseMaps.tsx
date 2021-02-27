@@ -10,7 +10,7 @@ import { renderable, tsx } from '@arcgis/core/widgets/support/widget';
 import Widget from '@arcgis/core/widgets/Widget';
 
 import BaseMapsViewModel from './BaseMaps/BaseMapsViewModel';
-
+import './BaseMaps/styles/BaseMaps.scss';
 export interface BaseMapsProperties extends esri.WidgetProperties {
 	view?: esri.MapView | esri.SceneView;
 }
@@ -49,7 +49,7 @@ export default class BaseMaps extends Widget {
 	};
 	handleSwitchChange = (e: any): void => {
 		if (e.target.getAttribute('switched') != '') {
-			document.querySelector('#blendSlider')?.classList.remove('hidden');
+			//document.querySelector('#blendSlider')?.classList.remove('hidden');
 			this.view.map.addMany(this.viewModel.activeBasemap.baseLayers.toArray(), 0);
 			this.view.map.basemap.referenceLayers.forEach((layer) => {
 				layer.visible = false;
@@ -63,7 +63,7 @@ export default class BaseMaps extends Widget {
 					layer.visible = true;
 				});
 		} else {
-			document.querySelector('#blendSlider')?.classList.add('hidden');
+			//document.querySelector('#blendSlider')?.classList.add('hidden');
 			this.view.map.basemap.referenceLayers.forEach((layer) => {
 				layer.visible = true;
 			});
@@ -115,29 +115,54 @@ export default class BaseMaps extends Widget {
 
 		return (
 			<div class={CSS.base}>
-				<label class="hidden" id="blend">
-					<calcite-switch afterCreate={this._blendCreated} id="blendSwitch"></calcite-switch> Blend
-				</label>
-				<calcite-slider
-					afterCreate={this._sliderCreated}
-					class="hidden"
-					id="blendSlider"
-					value="0.5"
-					max="1"
-					min="0"
-					step="0.1"
-				></calcite-slider>
-
-				<div afterCreate={this._createMaps} id="maps"></div>
-				<div afterCreate={this._createImages} id="images" class="hidden"></div>
-				<calcite-radio-group width="full">
-					<calcite-radio-group-item checked value="maps" id="mapsItem">
-						Maps
-					</calcite-radio-group-item>
-					<calcite-radio-group-item value="images" id="imagesItem" disabled>
-						Imagery
-					</calcite-radio-group-item>
-				</calcite-radio-group>
+				<calcite-tabs layout="center" position="below" calcite-hydrated="">
+					<calcite-tab-nav slot="tab-nav" role="tablist" layout="center" position="below" calcite-hydrated="">
+						<calcite-tab-title
+							active
+							aria-expanded="true"
+							dir="ltr"
+							hastext=""
+							id="listTabTitle"
+							role="tab"
+							tabindex="0"
+							layout="center"
+							position="below"
+							calcite-hydrated=""
+						>
+							Base Maps
+						</calcite-tab-title>
+						<calcite-tab-title
+							aria-expanded="false"
+							dir="ltr"
+							hastext=""
+							id="detailsTabTitle"
+							role="tab"
+							tabindex="0"
+							layout="center"
+							position="below"
+							calcite-hydrated=""
+						>
+							Imagery
+						</calcite-tab-title>
+					</calcite-tab-nav>
+					<calcite-tab aria-expanded="true" id="listTab" role="tabpanel" calcite-hydrated="">
+						<div afterCreate={this._createMaps} id="maps"></div>
+					</calcite-tab>
+					<calcite-tab aria-expanded="false" id="detailsTab" role="tabpanel" calcite-hydrated="">
+						<label id="blend">
+							<calcite-switch afterCreate={this._blendCreated} id="blendSwitch"></calcite-switch> Blend
+						</label>
+						<calcite-slider
+							afterCreate={this._sliderCreated}
+							id="blendSlider"
+							value="0.5"
+							max="1"
+							min="0"
+							step="0.1"
+						></calcite-slider>
+						<div afterCreate={this._createImages} id="images"></div>
+					</calcite-tab>
+				</calcite-tabs>
 			</div>
 		);
 	}

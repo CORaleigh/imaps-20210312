@@ -66,6 +66,10 @@ export default class PropertySearch extends Widget {
 		}
 	};
 
+	_navCreated = (elm: Element): void => {
+		elm.innerHTML += '<style>:focus { outline: none; }</style>';
+	};
+
 	currentRadioButton = 'list';
 
 	render(): tsx.JSX.Element {
@@ -111,6 +115,7 @@ export default class PropertySearch extends Widget {
 							layout="center"
 							position="below"
 							calcite-hydrated=""
+							afterCreate={this._navCreated}
 						>
 							List
 						</calcite-tab-title>
@@ -125,6 +130,7 @@ export default class PropertySearch extends Widget {
 							position="below"
 							calcite-hydrated=""
 							disabled
+							afterCreate={this._navCreated}
 						>
 							Details
 						</calcite-tab-title>

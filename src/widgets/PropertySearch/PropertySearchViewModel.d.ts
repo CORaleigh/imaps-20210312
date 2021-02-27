@@ -2,7 +2,6 @@ import esri = __esri;
 import Accessor from '@arcgis/core/core/Accessor';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import Graphic from '@arcgis/core/Graphic';
-import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
 export default class PropertySearchViewModel extends Accessor {
     view: esri.MapView | esri.SceneView;
     condosTable: esri.FeatureLayer;
@@ -25,6 +24,7 @@ export default class PropertySearchViewModel extends Accessor {
     addGraphics: (result: esri.FeatureSet) => void;
     getProperty: (oids: number[], source?: string | undefined) => void;
     searchComplete: (event: esri.SearchSearchCompleteEvent) => void;
+    setClickOnTableRows: () => void;
     setFeature(feature: esri.Graphic, view: esri.MapView, mediaInfos: any[], oids: number[]): void;
     exportTable(): void;
     checkSearchParams: () => void;

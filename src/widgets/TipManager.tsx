@@ -8,7 +8,7 @@ import Widget from '@arcgis/core/widgets/Widget';
 
 import TipManagerViewModel from './TipManager/TipManagerViewModel';
 import { Tip } from '../types/tip';
-
+import './TipManager/styles/TipManager.scss';
 export interface TipManagerProperties extends esri.WidgetProperties {
 	title?: string;
 	tips?: Tip[];

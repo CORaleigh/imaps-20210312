@@ -21,7 +21,7 @@ import Locate from '@arcgis/core/widgets/Locate';
 import Print from '@arcgis/core/widgets/Print';
 import Bookmarks from '@arcgis/core/widgets/Bookmarks';
 import { Action } from './types/action';
-
+import * as promiseUtils from '@arcgis/core/core/promiseUtils';
 import OverviewMap from './widgets/OverviewMap';
 import Clear from './widgets/Clear';
 import { Tip } from './types/tip';
@@ -80,38 +80,72 @@ export function initWidgets(view: __esri.MapView) {
 
 	const locationSearch = new LocationSearch({ view });
 	toolbar.view = view;
-	toolbar.actions = [
-		new Action('Select', select, 'selection', 'selectDiv', true, []),
-		new Action('Measure', measurement, 'measure', 'measureDiv', true, []),
-		new Action('Draw', drawWidget, 'pencil-mark', 'drawDiv', true, []),
-		new Action('Bookmarks', bookmarks, 'bookmark', 'bookmarkDiv', true, []),
-		new Action('Print', printWidget, 'print', 'printDiv', true, []),
-	];
 	actionBar.view = view;
-	actionBar.actions = [
-		new Action('Property Search', propertySearch, 'search', 'propertySearchDiv', false, [
-			new Tip(
-				'Wildcard Search',
-				'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
-			),
-			new Tip(
-				'Wildcard Search',
-				'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
-			),
-		]),
-		new Action('Location Search', locationSearch, 'pin', 'locationSearchDiv', false, [
-			new Tip(
-				'Location Search',
-				'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
-			),
-		]),
-		new Action('Layers', layers, 'layers', 'layerDiv', false, []),
-		new Action('Basemaps', basemaps, 'basemap', 'basemapDiv', false, []),
-		new Action('Legend', legend, 'legend', 'legendDiv', false, []),
-	];
+	toolbar.actions.concat(actionBar.actions).forEach((action) => {
+		if (action.title === 'Select') {
+			action.widget = select;
+		}
+		if (action.title === 'Measure') {
+			action.widget = measurement;
+		}
+		if (action.title === 'Draw') {
+			action.widget = drawWidget;
+		}
+		if (action.title === 'Bookmarks') {
+			action.widget = bookmarks;
+		}
+		if (action.title === 'Print') {
+			action.widget = printWidget;
+		}
+		if (action.title === 'Property Search') {
+			action.widget = propertySearch;
+		}
+		if (action.title === 'Location Search') {
+			action.widget = locationSearch;
+		}
+		if (action.title === 'Layers') {
+			action.widget = layers;
+		}
+		if (action.title === 'Basemaps') {
+			action.widget = basemaps;
+		}
+		if (action.title === 'Legend') {
+			action.widget = legend;
+		}
+	});
 
-	const toolactions: Action[] = [...toolbar.actions];
-	actionBar.actions = [...actionBar.actions, ...toolactions];
+	// toolbar.actions = [
+	// 	new Action('Select', select, 'selection', 'selectDiv', true, []),
+	// 	new Action('Measure', measurement, 'measure', 'measureDiv', true, []),
+	// 	new Action('Draw', drawWidget, 'pencil-mark', 'drawDiv', true, []),
+	// 	new Action('Bookmarks', bookmarks, 'bookmark', 'bookmarkDiv', true, []),
+	// 	new Action('Print', printWidget, 'print', 'printDiv', true, []),
+	// ];
+	// actionBar.view = view;
+	// actionBar.actions = [
+	// 	new Action('Property Search', propertySearch, 'search', 'propertySearchDiv', false, [
+	// 		new Tip(
+	// 			'Wildcard Search',
+	// 			'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
+	// 		),
+	// 		new Tip(
+	// 			'Wildcard Search',
+	// 			'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
+	// 		),
+	// 	]),
+	// 	new Action('Location Search', locationSearch, 'pin', 'locationSearchDiv', false, [
+	// 		new Tip(
+	// 			'Location Search',
+	// 			'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
+	// 		),
+	// 	]),
+	// 	new Action('Layers', layers, 'layers', 'layerDiv', false, []),
+	// 	new Action('Basemaps', basemaps, 'basemap', 'basemapDiv', false, []),
+	// 	new Action('Legend', legend, 'legend', 'legendDiv', false, []),
+	// ];
+
+	// const toolactions: Action[] = [...toolbar.actions];
+	// actionBar.actions = [...actionBar.actions, ...toolactions];
 	//view.ui.add(legend, 'bottom-left');
 	//view.ui.add(layerList, 'top-right');
 	return view;
@@ -161,18 +195,52 @@ function initUiWidgets(view: MapView): void {
 	});
 	view.ui.add(overviewExpand, 'bottom-right');
 }
-export function loadLayout(): void {
-	const tips = new TipManager({ container: 'tipManager', tips: [], title: '' });
-	menu = new Menu({ container: 'menu' });
+export function loadLayout(): Promise<any> {
+	return promiseUtils.create(function (resolve) {
+		const tips = new TipManager({ container: 'tipManager', tips: [], title: '' });
+		menu = new Menu({ container: 'menu' });
 
-	toolbar = new ActionBar({
-		container: 'leftbar',
-		side: 'left',
-		tipManager: tips,
-	});
-	actionBar = new ActionBar({
-		container: 'rightbar',
-		side: 'right',
-		tipManager: tips,
+		toolbar = new ActionBar({
+			container: 'leftbar',
+			side: 'left',
+			tipManager: tips,
+		});
+		actionBar = new ActionBar({
+			container: 'rightbar',
+			side: 'right',
+			tipManager: tips,
+		});
+		toolbar.actions = [
+			new Action('Select', null, 'selection', 'selectDiv', true, []),
+			new Action('Measure', null, 'measure', 'measureDiv', true, []),
+			new Action('Draw', null, 'pencil-mark', 'drawDiv', true, []),
+			new Action('Bookmarks', null, 'bookmark', 'bookmarkDiv', true, []),
+			new Action('Print', null, 'print', 'printDiv', true, []),
+		];
+		actionBar.actions = [
+			new Action('Property Search', null, 'search', 'propertySearchDiv', false, [
+				new Tip(
+					'Wildcard Search',
+					'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
+				),
+				new Tip(
+					'Wildcard Search',
+					'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
+				),
+			]),
+			new Action('Location Search', null, 'pin', 'locationSearchDiv', false, [
+				new Tip(
+					'Location Search',
+					'To search by a portion of an owner name or address, hit enter without selecting form the list of suggestions.',
+				),
+			]),
+			new Action('Layers', null, 'layers', 'layerDiv', false, []),
+			new Action('Basemaps', null, 'basemap', 'basemapDiv', false, []),
+			new Action('Legend', null, 'legend', 'legendDiv', false, []),
+		];
+
+		const toolactions: Action[] = [...toolbar.actions];
+		actionBar.actions = [...actionBar.actions, ...toolactions];
+		resolve();
 	});
 }

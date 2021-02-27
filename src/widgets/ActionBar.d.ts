@@ -20,5 +20,6 @@ export default class ActionBar extends Widget {
     viewModel: ActionBarViewModel;
     constructor(properties?: ActionBarProperties);
     panelCreated: () => void;
+    maximizeCreated: (elm: Element) => void;
     render(): tsx.JSX.Element;
 }

@@ -10,6 +10,7 @@ export default class Menu extends Widget {
     view: esri.MapView | esri.SceneView;
     theme: string;
     viewModel: MenuViewModel;
+    setTheme: (value: string) => void;
     menuCreated: () => void;
     constructor(properties?: MenuProperties);
     render(): tsx.JSX.Element;

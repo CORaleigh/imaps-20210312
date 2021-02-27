@@ -49,7 +49,7 @@ export default class BaseMapsViewModel extends Accessor {
 		});
 		this.view.map.watch('basemap', (basemap: esri.Basemap) => {
 			this.changePropertyLines(basemap);
-			if (document.querySelector('#images')?.classList.contains('hidden')) {
+			if (document.querySelector('#images')?.classList.contains('esri-hidden')) {
 				this.activeBasemap.baseLayers.forEach((layer) => {
 					this.view.map.remove(this.view.map.findLayerById(layer.id));
 				});
@@ -87,18 +87,18 @@ export default class BaseMapsViewModel extends Accessor {
 	}
 	toggleContent = (value: string): void => {
 		if (value === 'maps') {
-			document.querySelector('#maps')?.classList.remove('hidden');
-			document.querySelector('#images')?.classList.add('hidden');
+			document.querySelector('#maps')?.classList.remove('esri-hidden');
+			document.querySelector('#images')?.classList.add('esri-hidden');
 			document.querySelector('#mapsItem')?.setAttribute('checked', '');
 			document.querySelector('#imagesItem')?.removeAttribute('checked');
-			document.querySelector('#blend')?.classList.add('hidden');
-			document.querySelector('#blendSlider')?.classList.add('hidden');
+			document.querySelector('#blend')?.classList.add('esri-hidden');
+			document.querySelector('#blendSlider')?.classList.add('esri-hidden');
 		} else {
-			document.querySelector('#images')?.classList.remove('hidden');
-			document.querySelector('#maps')?.classList.add('hidden');
+			document.querySelector('#images')?.classList.remove('esri-hidden');
+			document.querySelector('#maps')?.classList.add('esri-hidden');
 			document.querySelector('#imagesItem')?.setAttribute('checked', '');
 			document.querySelector('#mapsItem')?.removeAttribute('checked');
-			document.querySelector('#blend')?.classList.remove('hidden');
+			document.querySelector('#blend')?.classList.remove('esri-hidden');
 		}
 	};
 }

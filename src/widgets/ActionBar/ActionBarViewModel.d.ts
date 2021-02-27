@@ -6,6 +6,7 @@ export default class ActionBarViewModel extends Accessor {
     view: esri.MapView | esri.SceneView;
     side: string;
     actions: Action[];
+    title: string;
     tipManager: TipManager;
     constructor(params?: unknown);
     changePanel: (name: string) => void;

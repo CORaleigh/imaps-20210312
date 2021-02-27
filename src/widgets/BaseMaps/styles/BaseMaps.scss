@@ -1,3 +1,25 @@
 .basemaps-base {
   padding: 0;
 }
+#basemapDiv {
+  height: 100%;
+}
+
+
+.basemaps-base calcite-tab {
+  height: 100%;
+  position: absolute;
+  top: 54px;
+  left: 0;
+  right: 0;
+  height: calc(100% - 99px);
+}
+
+
+.basemaps-base calcite-tabs {
+  height: 100%
+}
+
+.esri-basemap-gallery {
+  height: 100%;
+}

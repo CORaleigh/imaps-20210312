@@ -25,6 +25,7 @@ export default class PropertySearch extends Widget {
     _createSearch: () => void;
     _createTable: () => void;
     _createFeature: () => void;
+    _navCreated: (elm: Element) => void;
     currentRadioButton: string;
     render(): tsx.JSX.Element;
 }

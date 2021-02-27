@@ -45,28 +45,10 @@ export default class ActionBar extends Widget {
 	constructor(properties?: ActionBarProperties) {
 		super(properties);
 	}
-	//actionBarCreated = (elm: HTMLElement): void => {
-	// elm.addEventListener('click', (evt) => {
-	// 	document.getElementById(this.side + 'Panel')?.removeAttribute('dismissed');
-	// 	const name = (evt.target as HTMLElement).getAttribute('name') as string;
-	// 	this.viewModel.changePanel(name);
-	// 	if (window.innerWidth >= 1000) {
-	// 		document.querySelectorAll('#rightPanel .tool-container').forEach((container) => {
-	// 			document.querySelector('#leftPanel')?.append(container);
-	// 		});
-	// 	} else {
-	// 		document.querySelectorAll('#leftPanel .tool-container').forEach((container) => {
-	// 			document.querySelector('#rightPanel')?.append(container);
-	// 		});
-	// 	}
-	// });
-	// };
+
 	panelCreated = (): void => {
 		const observer: MutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
-				// (mutation.addedNodes[0] as HTMLElement)
-				// 	.querySelector('.content-container')
-				// 	?.setAttribute('style', 'height:100%;');
 				(mutation.addedNodes[0] as HTMLElement)
 					.querySelector('.content-container')
 					?.setAttribute('part', 'container');
@@ -76,39 +58,33 @@ export default class ActionBar extends Widget {
 		document.querySelectorAll('calcite-panel').forEach((item) => {
 			observer.observe(item?.shadowRoot as Node, { childList: true });
 			console.log(item?.shadowRoot?.innerHTML);
-			//const container = item?.shadowRoot?.querySelector('.content-container')?.setAttribute('style', 'height:100%;');
 		});
 
 		document.querySelectorAll('calcite-panel .heading').forEach((elm: Element) => {
 			elm.setAttribute('style', 'margin: 0');
 		});
 	};
-	// initTips = () => {
-	// 	document.querySelectorAll('.tip').forEach(item => {
-	// 	  item.addEventListener('click', () => {
-	// 		document.querySelector('calcite-tip-manager')?.remove();
-	// 		item.parentElement?.parentElement?.removeAttribute('dismissed');
-	// 		item.parentElement?.parentElement?.classList.remove('hidden');
-	// 		const manager = document.createElement('calcite-tip-manager');
-	// 		manager.setAttribute('theme', theme);
-	// 		const tipGroup = tipGroups.find(group => {
-	// 		  return group.panel.name === item.id;
-	// 		});
 
-	// 		const group = document.createElement('calcite-tip-group');
-	// 		group.setAttribute('text-group-title', (tipGroup as any)?.panel.title);
-	// 		manager.appendChild(group);
-	// 		tipGroup?.panel.tips.forEach(tip => {
-	// 		  const calciteTip = document.createElement('calcite-tip');
-	// 		  calciteTip.setAttribute('heading', tip.title);
-	// 		  const p = document.createElement('p');
-	// 		  p.innerHTML = tip.message;
-	// 		  calciteTip.appendChild(p);
-	// 		  group.appendChild(calciteTip);
-	// 		});
-	// 		document?.body?.appendChild(manager);
-	// 	  });
-	// 	});
+	maximizeCreated = (elm: Element): void => {
+		elm.addEventListener('click', () => {
+			const panel = document.querySelector(`#${this.side}bar`);
+			if (panel?.classList.contains('maximized')) {
+				elm.querySelector('calcite-icon')?.setAttribute('icon', 'right-edge');
+
+				panel?.classList.remove('maximized');
+			} else {
+				elm.querySelector('calcite-icon')?.setAttribute('icon', 'left-edge');
+				panel?.classList.add('maximized');
+			}
+			//workaround to handle tab indicator not repositioning after resize of panel
+			document.querySelector('calcite-tab:not([active])')?.classList.add('esri-hidden');
+			document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
+			setTimeout(() => {
+				document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
+				document.querySelector('calcite-tab.esri-hidden')?.classList.remove('esri-hidden');
+			}, 100);
+		});
+	};
 
 	render(): tsx.JSX.Element {
 		window.onresize = () => {
@@ -137,6 +113,14 @@ export default class ActionBar extends Widget {
 					afterCreate={this.panelCreated}
 				>
 					<h3 class="heading" slot="header-content" id={this.side + 'PanelHeading'}></h3>
+					<calcite-action
+						class="maximize"
+						text="Action"
+						label="Action"
+						slot="header-actions-end"
+						icon="left-edge"
+						afterCreate={this.maximizeCreated}
+					></calcite-action>
 					<calcite-action
 						id={`${this.side}Tip`}
 						class="tip-button"
