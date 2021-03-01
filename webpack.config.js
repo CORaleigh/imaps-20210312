@@ -163,6 +163,8 @@ module.exports = function build(env, arg) {
             "@arcgis/core/tasks/ImageServiceIdentifyTask",
             "@arcgis/core/tasks/RouteTask",
             "@arcgis/core/tasks/ServiceAreaTask",
+            "@arcgis/core/views/3d/externalRenderers",
+            "@arcgis/core/views/SceneView"
           ]          
         }
    }),
