@@ -14,6 +14,20 @@ module.exports = function build(env, arg) {
   const config = {
     entry: {
       index: ['./src/css/index.css', '@babel/polyfill', './src/index.ts'],
+      search: ['./src/data/search.ts'],
+      propertySearch: ['./src/widgets/PropertySearch/styles/PropertySearch.scss', './src/widgets/PropertySearch.tsx','./src/widgets/PropertySearch/PropertySearchViewModel.ts'],
+      actionBar: ['./src/widgets/ActionBar/styles/ActionBar.scss', './src/widgets/ActionBar.tsx','./src/widgets/ActionBar/ActionBarViewModel.ts'],
+      baseMaps: ['./src/widgets/BaseMaps/styles/BaseMaps.scss', './src/widgets/BaseMaps.tsx','./src/widgets/BaseMaps/BaseMapsViewModel.ts'],
+      clear: ['./src/widgets/Clear/styles/Clear.scss', './src/widgets/Clear.tsx','./src/widgets/Clear/ClearViewModel.ts'],
+      draw: ['./src/widgets/Draw/styles/Draw.scss', './src/widgets/Draw.tsx','./src/widgets/Draw/DrawViewModel.ts'],
+      layers: ['./src/widgets/Layers/styles/Layers.scss', './src/widgets/Layers.tsx','./src/widgets/Layers/LayersViewModel.ts'],
+      locationSearch: ['./src/widgets/LocationSearch/styles/LocationSearch.scss', './src/widgets/LocationSearch.tsx','./src/widgets/LocationSearch/LocationSearchViewModel.ts'],
+      measure: ['./src/widgets/Measure/styles/Measure.scss', './src/widgets/Measure.tsx','./src/widgets/Measure/MeasureViewModel.ts'],
+      menu: ['./src/widgets/Menu/styles/Menu.scss', './src/widgets/Menu.tsx','./src/widgets/Menu/MenuViewModel.ts'],
+      overviewMap: ['./src/widgets/OverviewMap/styles/OverviewMap.scss', './src/widgets/OverviewMap.tsx','./src/widgets/OverviewMap/OverviewMapViewModel.ts'],
+      select: ['./src/widgets/Select/styles/Select.scss', './src/widgets/Select.tsx','./src/widgets/Select/SelectViewModel.ts'],
+      tipManager: ['./src/widgets/TipManager/styles/TipManager.scss', './src/widgets/TipManager.tsx','./src/widgets/TipManager/TipManagerViewModel.ts'],
+
     },
     output: {
       path: path.join(__dirname, 'dist'),
@@ -182,7 +196,8 @@ module.exports = function build(env, arg) {
           if (/\.woff2$/.test(entry)) return 'font';
           if (/\.png$/.test(entry)) return 'image';
           return 'script';
-        }
+        },
+        fileBlacklist: [/chunks/]
       })
     ],
     resolve: {

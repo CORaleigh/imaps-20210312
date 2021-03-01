@@ -2,7 +2,7 @@ import esri = __esri;
 import { tsx } from '@arcgis/core/widgets/support/widget';
 import Widget from '@arcgis/core/widgets/Widget';
 import ActionBarViewModel from './ActionBar/ActionBarViewModel';
-import './ActionBar/styles/ActonBar.scss';
+import './ActionBar/styles/ActionBar.scss';
 import { Action } from '../types/action';
 import TipManager from './TipManager';
 export interface ActionBarProperties extends esri.WidgetProperties {

@@ -47,6 +47,7 @@ export default class Menu extends Widget {
 			preload.href = `./assets/esri/themes/${this.theme}/main.css`;
 			preload.setAttribute('rel', 'preload');
 			preload.setAttribute('type', 'text/css');
+			preload.setAttribute('as', 'style');
 			document.querySelector('head')?.append(preload);
 			const link = document.createElement('link');
 			link.href = `./assets/esri/themes/${this.theme}/main.css`;

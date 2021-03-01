@@ -20,6 +20,8 @@ const preload = document.createElement('link');
 preload.href = './assets/esri/themes/light/main.css';
 preload.setAttribute('rel', 'preload');
 preload.setAttribute('type', 'text/css');
+preload.setAttribute('as', 'style');
+
 document.querySelector('head')?.append(preload);
 const link = document.createElement('link');
 link.href = './assets/esri/themes/light/main.css';
