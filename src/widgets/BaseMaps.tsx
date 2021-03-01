@@ -88,7 +88,7 @@ export default class BaseMaps extends Widget {
 			.querySelector('#blendSlider')
 			?.addEventListener(
 				'calciteSliderUpdate',
-				this.handleSliderChange.bind({ basemap: this.basemaps, view: this.view }),
+				this.handleSliderChange.bind({ basemap: this.basemaps, view: this.view }, { passive: true }),
 			);
 	};
 	_blendCreated = (e: any) => {
@@ -96,7 +96,7 @@ export default class BaseMaps extends Widget {
 			.querySelector('#blendSwitch')
 			?.addEventListener(
 				'calciteSwitchChange',
-				this.handleSwitchChange.bind({ basemap: this.basemaps, view: this.view }),
+				this.handleSwitchChange.bind({ basemap: this.basemaps, view: this.view }, { passive: true }),
 			);
 
 		document.querySelector('#blend')?.removeAttribute('switched');
@@ -105,12 +105,16 @@ export default class BaseMaps extends Widget {
 	render() {
 		const items = document.querySelectorAll('#basemapDiv calcite-radio-group-item');
 		items.forEach((item) => {
-			item?.addEventListener('calciteRadioGroupItemChange', (e: any) => {
-				// can I get checked and value like this?
-				if (e.target?.checked) {
-					this.viewModel.toggleContent(e.target?.value);
-				}
-			});
+			item?.addEventListener(
+				'calciteRadioGroupItemChange',
+				(e: any) => {
+					// can I get checked and value like this?
+					if (e.target?.checked) {
+						this.viewModel.toggleContent(e.target?.value);
+					}
+				},
+				{ passive: true },
+			);
 		});
 
 		return (

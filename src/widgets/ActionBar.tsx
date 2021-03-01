@@ -66,24 +66,28 @@ export default class ActionBar extends Widget {
 	};
 
 	maximizeCreated = (elm: Element): void => {
-		elm.addEventListener('click', () => {
-			const panel = document.querySelector(`#${this.side}bar`);
-			if (panel?.classList.contains('maximized')) {
-				elm.querySelector('calcite-icon')?.setAttribute('icon', 'right-edge');
+		elm.addEventListener(
+			'click',
+			() => {
+				const panel = document.querySelector(`#${this.side}bar`);
+				if (panel?.classList.contains('maximized')) {
+					elm.querySelector('calcite-icon')?.setAttribute('icon', 'right-edge');
 
-				panel?.classList.remove('maximized');
-			} else {
-				elm.querySelector('calcite-icon')?.setAttribute('icon', 'left-edge');
-				panel?.classList.add('maximized');
-			}
-			//workaround to handle tab indicator not repositioning after resize of panel
-			document.querySelector('calcite-tab:not([active])')?.classList.add('esri-hidden');
-			document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
-			setTimeout(() => {
+					panel?.classList.remove('maximized');
+				} else {
+					elm.querySelector('calcite-icon')?.setAttribute('icon', 'left-edge');
+					panel?.classList.add('maximized');
+				}
+				//workaround to handle tab indicator not repositioning after resize of panel
+				document.querySelector('calcite-tab:not([active])')?.classList.add('esri-hidden');
 				document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
-				document.querySelector('calcite-tab.esri-hidden')?.classList.remove('esri-hidden');
-			}, 100);
-		});
+				requestAnimationFrame(() => {
+					document.querySelector('calcite-tab-title:not([active])')?.dispatchEvent(new MouseEvent('click'));
+					document.querySelector('calcite-tab.esri-hidden')?.classList.remove('esri-hidden');
+				});
+			},
+			{ passive: true },
+		);
 	};
 
 	render(): tsx.JSX.Element {
@@ -109,7 +113,7 @@ export default class ActionBar extends Widget {
 					intl-close="Close"
 					theme="light"
 					dismissible
-					dismissed
+					dismissed={this.side === 'left'}
 					afterCreate={this.panelCreated}
 				>
 					<h3 class="heading" slot="header-content" id={this.side + 'PanelHeading'}></h3>

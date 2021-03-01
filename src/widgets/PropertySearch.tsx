@@ -75,30 +75,42 @@ export default class PropertySearch extends Widget {
 	render(): tsx.JSX.Element {
 		const items = document.querySelectorAll('#sideDiv calcite-radio-group-item');
 		items.forEach((item) => {
-			item?.addEventListener('calciteRadioGroupItemChange', (e: any) => {
-				// can I get checked and value like this?
-				if (e.target?.checked) {
-					this.viewModel.toggleContent(e.target?.value);
-				}
-			});
+			item?.addEventListener(
+				'calciteRadioGroupItemChange',
+				(e: any) => {
+					// can I get checked and value like this?
+					if (e.target?.checked) {
+						this.viewModel.toggleContent(e.target?.value);
+					}
+				},
+				{ passive: true },
+			);
 		});
 		const featDiv = document.querySelector('#featureDiv') as HTMLElement;
 
-		document.querySelector('#scrollArrow')?.addEventListener('click', () => {
-			featDiv?.scrollBy({ top: featDiv.offsetHeight, behavior: 'smooth' });
-		});
+		document.querySelector('#scrollArrow')?.addEventListener(
+			'click',
+			() => {
+				featDiv?.scrollBy({ top: featDiv.offsetHeight, behavior: 'smooth' });
+			},
+			{ passive: true },
+		);
 		const theme = window.localStorage.getItem('theme');
 		if (theme) {
 			document.querySelector('#arrowPath')?.setAttribute('stroke', theme === 'light' ? 'black' : 'white');
 		}
 
-		featDiv?.addEventListener('scroll', () => {
-			if (featDiv.scrollTop >= featDiv.scrollHeight - featDiv.offsetHeight - 1) {
-				document.querySelector('#scrollArrow')?.classList.add('hidden');
-			} else {
-				document.querySelector('#scrollArrow')?.classList.remove('hidden');
-			}
-		});
+		featDiv?.addEventListener(
+			'scroll',
+			() => {
+				if (featDiv.scrollTop >= featDiv.scrollHeight - featDiv.offsetHeight - 1) {
+					document.querySelector('#scrollArrow')?.classList.add('hidden');
+				} else {
+					document.querySelector('#scrollArrow')?.classList.remove('hidden');
+				}
+			},
+			{ passive: true },
+		);
 		return (
 			<div class={CSS.base}>
 				<div afterCreate={this._createSearch} id="search"></div>

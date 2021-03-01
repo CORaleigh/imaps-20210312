@@ -79,10 +79,16 @@ export default class Layers extends Widget {
 			?.removeEventListener('click', this.clearClick);
 	};
 	_createSearch = (input: HTMLElement): void => {
-		input.addEventListener('input', (e: any) => {
-			this.filterLayers(e.target.value);
-			input.querySelector('.calcite-input-clear-button')?.addEventListener('click', this.clearClick);
-		});
+		input.addEventListener(
+			'input',
+			(e: any) => {
+				this.filterLayers(e.target.value);
+				input
+					.querySelector('.calcite-input-clear-button')
+					?.addEventListener('click', this.clearClick, { passive: true });
+			},
+			{ passive: true },
+		);
 	};
 	_reset = (): void => {
 		new WebMap({ portalItem: (this.view.map as esri.WebMap).portalItem.clone() }).load().then((map: WebMap) => {

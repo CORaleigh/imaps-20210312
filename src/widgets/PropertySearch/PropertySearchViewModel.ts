@@ -343,19 +343,23 @@ export default class PropertySearchViewModel extends Accessor {
 		}
 	};
 	setClickOnTableRows = () => {
-		setTimeout(() => {
+		requestAnimationFrame(() => {
 			document
 				.querySelector('.esri-feature-table')
 				?.querySelector('vaadin-grid')
 				?.shadowRoot?.querySelectorAll('tbody tr')
 				?.forEach((row) => {
-					row.addEventListener('click', (elm) => {
-						(elm?.target as HTMLElement)?.previousElementSibling?.firstElementChild?.shadowRoot
-							?.querySelector('label')
-							?.firstElementChild?.firstElementChild?.dispatchEvent(new MouseEvent('click'));
-					});
+					row.addEventListener(
+						'click',
+						(elm) => {
+							(elm?.target as HTMLElement)?.previousElementSibling?.firstElementChild?.shadowRoot
+								?.querySelector('label')
+								?.firstElementChild?.firstElementChild?.dispatchEvent(new MouseEvent('click'));
+						},
+						{ passive: true },
+					);
 				});
-		}, 2000);
+		});
 	};
 	setFeature(feature: esri.Graphic, view: esri.MapView, mediaInfos: any[], oids: number[]): void {
 		const params = new URL(document.location.href).searchParams;

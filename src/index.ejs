@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="eng">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="Description" content="iMAPS">
   <title><%= htmlWebpackPlugin.options.title %></title>
   <% if (htmlWebpackPlugin.options.mode === 'production') { %>
   <script>
@@ -16,13 +17,14 @@
           .catch(function() {
             console.log("Service Worker not loaded");
           });
-      });
+      },{passive: true});
     }
   </script>
 
   <% } %>
-  <link rel="stylesheet" type="text/css" href="./calcite/calcite.css" />
+  <link rel="preload" type="text/css" href="./calcite/calcite.css" />
 
+  <link rel="stylesheet" type="text/css" href="./calcite/calcite.css" />
 <script type="module" src="./calcite/calcite.esm.js"></script>
 <script nomodule="" src="./calcite/calcite.js"></script>    
 </head>

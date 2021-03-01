@@ -45,15 +45,19 @@ export default class Measure extends Widget {
 	render(): tsx.JSX.Element {
 		const items = document.querySelectorAll('#measureDiv calcite-radio-group-item');
 		items.forEach((item) => {
-			item?.addEventListener('calciteRadioGroupItemChange', (e: any) => {
-				if (!e.target.hasAttribute('checked')) {
-					if (e.target?.title === 'clear') {
-						this.measurement.clear();
-					} else {
-						this.measurement.activeTool = e.target?.title;
+			item?.addEventListener(
+				'calciteRadioGroupItemChange',
+				(e: any) => {
+					if (!e.target.hasAttribute('checked')) {
+						if (e.target?.title === 'clear') {
+							this.measurement.clear();
+						} else {
+							this.measurement.activeTool = e.target?.title;
+						}
 					}
-				}
-			});
+				},
+				{ passive: true },
+			);
 		});
 		return (
 			<div class={CSS.base}>

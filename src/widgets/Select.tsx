@@ -53,9 +53,13 @@ export default class Select extends Widget {
 		this.set('bufferDistance', parseInt(ev.target.value));
 	}
 	render(): tsx.JSX.Element {
-		document.querySelector('#selectDiv calcite-input')?.addEventListener('calciteInputBlur', (ev: any) => {
-			this.handleChange(ev);
-		});
+		document.querySelector('#selectDiv calcite-input')?.addEventListener(
+			'calciteInputBlur',
+			(ev: any) => {
+				this.handleChange(ev);
+			},
+			{ passive: true },
+		);
 
 		return (
 			<div class={CSS.base}>

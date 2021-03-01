@@ -76,14 +76,18 @@ export default class BaseMapsViewModel extends Accessor {
 				},
 			},
 		});
-		window.addEventListener('pagehide', () => {
-			this.activeBasemap.baseLayers.forEach((layer) => {
-				this.view.map.remove(this.view.map.findLayerById(layer.id));
-			});
-			const json = (view.map as any).toJSON();
-			json.initialState.viewpoint.targetGeometry = view.extent;
-			window.localStorage.setItem('imaps', JSON.stringify(json));
-		});
+		window.addEventListener(
+			'pagehide',
+			() => {
+				this.activeBasemap.baseLayers.forEach((layer) => {
+					this.view.map.remove(this.view.map.findLayerById(layer.id));
+				});
+				const json = (view.map as any).toJSON();
+				json.initialState.viewpoint.targetGeometry = view.extent;
+				window.localStorage.setItem('imaps', JSON.stringify(json));
+			},
+			{ passive: true },
+		);
 	}
 	toggleContent = (value: string): void => {
 		if (value === 'maps') {

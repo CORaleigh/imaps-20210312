@@ -129,9 +129,9 @@ const services: any[] = [
 const scrollToService = (e: any) => {
 	const rect = (e.detail.requestedAccordionItem as HTMLElement).getBoundingClientRect();
 	const div = document.querySelector('#featureDiv');
-	setTimeout(() => {
+	requestAnimationFrame(() => {
 		div?.scrollTo({ top: rect.top + div.scrollTop - 155, behavior: 'smooth' });
-	}, 500);
+	});
 };
 const serviceChanged = (graphic: __esri.Graphic, view: __esri.MapView | __esri.SceneView, e: any) => {
 	if (
@@ -562,9 +562,13 @@ export const createTemplate = (view: __esri.MapView | __esri.SceneView): void =>
 					//const f = serviceChanged.bind(e.Graphic);
 					// setTimeout(f, 1000);
 					const graphic = e.graphic;
-					accordion.addEventListener('calciteAccordionChange', (e: any) => {
-						serviceChanged(graphic, view, e);
-					});
+					accordion.addEventListener(
+						'calciteAccordionChange',
+						(e: any) => {
+							serviceChanged(graphic, view, e);
+						},
+						{ passive: true },
+					);
 					return accordion;
 				},
 			}),

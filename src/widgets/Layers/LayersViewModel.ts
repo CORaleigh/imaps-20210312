@@ -33,10 +33,14 @@ export default class LayersViewModel extends Accessor {
 					slider.setAttribute('label-handles', '');
 					slider.setAttribute('value', (item?.layer.opacity * 100).toString());
 					slider.setAttribute('data', item.layer.id);
-					slider.addEventListener('calciteSliderUpdate', (event) => {
-						view.map.findLayerById((event.target as any).getAttribute('data')).opacity =
-							parseInt((event?.target as any)?.getAttribute('value')) / 100;
-					});
+					slider.addEventListener(
+						'calciteSliderUpdate',
+						(event) => {
+							view.map.findLayerById((event.target as any).getAttribute('data')).opacity =
+								parseInt((event?.target as any)?.getAttribute('value')) / 100;
+						},
+						{ passive: true },
+					);
 					item.panel = {
 						content: [slider, 'legend'],
 						open: item.layer.visible,

@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
+const PreloadWebpackPlugin = require('@vue/preload-webpack-plugin');
 
 const path = require('path');
 
@@ -173,6 +174,16 @@ module.exports = function build(env, arg) {
           { from: "node_modules/@esri/calcite-components/dist/calcite", to: "calcite" },
         ],
       }),
+      new PreloadWebpackPlugin({
+        rel: 'preload',
+        as(entry) {
+          if (/\.css$/.test(entry)) return 'style';
+          if (/\.woff$/.test(entry)) return 'font';
+          if (/\.woff2$/.test(entry)) return 'font';
+          if (/\.png$/.test(entry)) return 'image';
+          return 'script';
+        }
+      })
     ],
     resolve: {
           modules: [

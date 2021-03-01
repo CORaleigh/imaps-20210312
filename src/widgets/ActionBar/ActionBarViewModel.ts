@@ -58,34 +58,43 @@ export default class ActionBarViewModel extends Accessor {
 		}
 	};
 	tipButtonCreated = (elm: HTMLElement): void => {
-		elm?.addEventListener('click', () => {
-			document.querySelector('calcite-tip-manager')?.removeAttribute('closed');
-		});
+		elm?.addEventListener(
+			'click',
+			() => {
+				document.querySelector('calcite-tip-manager')?.removeAttribute('closed');
+			},
+			{ passive: true },
+		);
 	};
 	actionBarCreated = (): void => {
 		watch(this, 'actions', this.initActions.bind(this));
 	};
 
 	initActions(): void {
-		setTimeout(() => {
+		requestAnimationFrame(() => {
+			debugger;
 			this.changePanel('Property Search');
 		});
 	}
 
 	actionsLoaded = (elm: HTMLElement): void => {
-		elm.addEventListener('click', (evt) => {
-			const name = (evt.target as HTMLElement).getAttribute('name') as string;
-			this.changePanel(name);
-			if (window.innerWidth >= 1000) {
-				document.querySelectorAll('#rightPanel .tool-container').forEach((container) => {
-					document.querySelector('#leftPanel')?.append(container);
-				});
-			} else {
-				document.querySelectorAll('#leftPanel .tool-container').forEach((container) => {
-					document.querySelector('#rightPanel')?.append(container);
-				});
-			}
-		});
+		elm.addEventListener(
+			'click',
+			(evt) => {
+				const name = (evt.target as HTMLElement).getAttribute('name') as string;
+				this.changePanel(name);
+				if (window.innerWidth >= 1000) {
+					document.querySelectorAll('#rightPanel .tool-container').forEach((container) => {
+						document.querySelector('#leftPanel')?.append(container);
+					});
+				} else {
+					document.querySelectorAll('#leftPanel .tool-container').forEach((container) => {
+						document.querySelector('#rightPanel')?.append(container);
+					});
+				}
+			},
+			{ passive: true },
+		);
 	};
 
 	init(view: esri.MapView | esri.SceneView): void {

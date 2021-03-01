@@ -16,18 +16,24 @@ export let view: MapView;
 // 	container: 'viewDiv',
 // 	map,
 // });
+const preload = document.createElement('link');
+preload.href = './assets/esri/themes/light/main.css';
+preload.setAttribute('rel', 'preload');
+preload.setAttribute('type', 'text/css');
+document.querySelector('head')?.append(preload);
 const link = document.createElement('link');
 link.href = './assets/esri/themes/light/main.css';
 link.setAttribute('rel', 'stylesheet');
 link.setAttribute('type', 'text/css');
 document.querySelector('head')?.append(link);
+
 loadLayout().then(() => {
 	view = new MapView({
 		container: 'viewDiv',
 		map,
 	});
 	view.when(initWidgets);
-	view.when(() => {
+	view?.when(() => {
 		checkLocalStorage(view);
 		view.on('hold', (e) => {
 			propertySearch.geometry = e.mapPoint;

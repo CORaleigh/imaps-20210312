@@ -49,44 +49,72 @@ export default class Draw extends Widget {
 	render(): tsx.JSX.Element {
 		const fill = document.querySelector('#fill');
 		fill?.setAttribute('value', '#ff0000');
-		fill?.addEventListener('calciteColorChange', (e: any) => {
-			const hex: string = e.target.value;
-			this.viewModel.sketch.viewModel.pointSymbol.color = Color.fromHex(hex);
-			this.viewModel.sketch.viewModel.polygonSymbol.color = Color.fromHex(hex);
-		});
+		fill?.addEventListener(
+			'calciteColorChange',
+			(e: any) => {
+				const hex: string = e.target.value;
+				this.viewModel.sketch.viewModel.pointSymbol.color = Color.fromHex(hex);
+				this.viewModel.sketch.viewModel.polygonSymbol.color = Color.fromHex(hex);
+			},
+			{ passive: true },
+		);
 		const line = document.querySelector('#line');
 		line?.setAttribute('value', '#ff0000');
-		line?.addEventListener('calciteColorChange', (e: any) => {
-			const hex: string = e.target.value;
-			this.viewModel.sketch.viewModel.polylineSymbol.color = Color.fromHex(hex);
-			(this.viewModel.sketch.viewModel.pointSymbol as esri.SimpleMarkerSymbol).outline.color = Color.fromHex(hex);
-			(this.viewModel.sketch.viewModel.polygonSymbol as esri.SimpleFillSymbol).outline.color = Color.fromHex(hex);
-		});
+		line?.addEventListener(
+			'calciteColorChange',
+			(e: any) => {
+				const hex: string = e.target.value;
+				this.viewModel.sketch.viewModel.polylineSymbol.color = Color.fromHex(hex);
+				(this.viewModel.sketch.viewModel.pointSymbol as esri.SimpleMarkerSymbol).outline.color = Color.fromHex(
+					hex,
+				);
+				(this.viewModel.sketch.viewModel.polygonSymbol as esri.SimpleFillSymbol).outline.color = Color.fromHex(
+					hex,
+				);
+			},
+			{ passive: true },
+		);
 		const opacity = document.querySelector('#opacity');
-		opacity?.addEventListener('calciteSliderUpdate', (e: any) => {
-			this.viewModel.sketch.viewModel.polygonSymbol.color.a = e.target.value;
-		});
+		opacity?.addEventListener(
+			'calciteSliderUpdate',
+			(e: any) => {
+				this.viewModel.sketch.viewModel.polygonSymbol.color.a = e.target.value;
+			},
+			{ passive: true },
+		);
 		const width = document.querySelector('#width');
-		width?.addEventListener('calciteSliderUpdate', (e: any) => {
-			(this.viewModel.sketch.viewModel.polylineSymbol as esri.SimpleLineSymbol).width = parseFloat(
-				e.target.value,
-			);
-			(this.viewModel.sketch.viewModel.pointSymbol as esri.SimpleMarkerSymbol).outline.width = parseFloat(
-				e.target.value,
-			);
-			(this.viewModel.sketch.viewModel.polygonSymbol as esri.SimpleFillSymbol).outline.width = parseFloat(
-				e.target.value,
-			);
-		});
+		width?.addEventListener(
+			'calciteSliderUpdate',
+			(e: any) => {
+				(this.viewModel.sketch.viewModel.polylineSymbol as esri.SimpleLineSymbol).width = parseFloat(
+					e.target.value,
+				);
+				(this.viewModel.sketch.viewModel.pointSymbol as esri.SimpleMarkerSymbol).outline.width = parseFloat(
+					e.target.value,
+				);
+				(this.viewModel.sketch.viewModel.polygonSymbol as esri.SimpleFillSymbol).outline.width = parseFloat(
+					e.target.value,
+				);
+			},
+			{ passive: true },
+		);
 		const label = document.querySelector('#label');
-		label?.addEventListener('calciteInputBlur', (e: any) => {
-			this.set('label', e.target.value);
-		});
+		label?.addEventListener(
+			'calciteInputBlur',
+			(e: any) => {
+				this.set('label', e.target.value);
+			},
+			{ passive: true },
+		);
 		const textColor = document.querySelector('#textColor');
 		textColor?.setAttribute('value', '#ff0000');
-		textColor?.addEventListener('calciteColorChange', (e: any) => {
-			this.set('textColor', Color.fromHex(e.target.value));
-		});
+		textColor?.addEventListener(
+			'calciteColorChange',
+			(e: any) => {
+				this.set('textColor', Color.fromHex(e.target.value));
+			},
+			{ passive: true },
+		);
 		return (
 			<div class={CSS.base}>
 				<div afterUpdate={this._drawUpdated} id="sketchDiv"></div>

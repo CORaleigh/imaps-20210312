@@ -35,14 +35,21 @@ export default class Menu extends Widget {
 		document.body.classList.remove(value == 'light' ? 'dark' : 'light');
 
 		document.body.classList.add(value);
-
-		const style = Array.prototype.slice.call(document.querySelectorAll('link')).find((link) => {
+		const style = Array.prototype.slice.call(document.querySelectorAll('link')).filter((link) => {
 			return link.href.includes('light') || link.href.includes('dark');
 		});
 		if (style) {
-			style.remove();
+			style.forEach((s) => {
+				s.remove();
+			});
+
+			const preload = document.createElement('link');
+			preload.href = `./assets/esri/themes/${this.theme}/main.css`;
+			preload.setAttribute('rel', 'preload');
+			preload.setAttribute('type', 'text/css');
+			document.querySelector('head')?.append(preload);
 			const link = document.createElement('link');
-			link.href = './assets/esri/themes/' + this.theme + '/main.css';
+			link.href = `./assets/esri/themes/${this.theme}/main.css`;
 			link.setAttribute('rel', 'stylesheet');
 			link.setAttribute('type', 'text/css');
 			document.querySelector('head')?.append(link);
@@ -82,14 +89,18 @@ export default class Menu extends Widget {
 		if (window.localStorage.getItem('theme')) {
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const value: string = window.localStorage.getItem('theme')!;
-			setTimeout(() => {
+			requestAnimationFrame(() => {
 				this.setTheme(value);
 			});
 		}
-		document.querySelector('calcite-dropdown')?.addEventListener('calciteDropdownSelect', (e: any) => {
-			const value: string = e.currentTarget.selectedItems[0]?.innerHTML.toLowerCase();
-			this.setTheme(value);
-		});
+		document.querySelector('calcite-dropdown')?.addEventListener(
+			'calciteDropdownSelect',
+			(e: any) => {
+				const value: string = e.currentTarget.selectedItems[0]?.innerHTML.toLowerCase();
+				this.setTheme(value);
+			},
+			{ passive: true },
+		);
 	};
 	constructor(properties?: MenuProperties) {
 		super(properties);
@@ -107,23 +118,27 @@ export default class Menu extends Widget {
 						</calcite-button>
 						<calcite-dropdown-group group-title="Help" selection-mode="none">
 							<calcite-dropdown-item>Help Document</calcite-dropdown-item>
-							<calcite-dropdown-item href="https://arcg.is/1GurDS" target="_blank">
+							<calcite-dropdown-item rel="noreferrer" href="https://arcg.is/1GurDS" target="_blank">
 								Feedback
 							</calcite-dropdown-item>
 						</calcite-dropdown-group>
 						<calcite-dropdown-group group-title="Data Download" selection-mode="none">
-							<calcite-dropdown-item href="https://data-wake.opendata.arcgis.com/" target="_blank">
+							<calcite-dropdown-item
+								rel="noreferrer"
+								href="https://data-wake.opendata.arcgis.com/"
+								target="_blank"
+							>
 								Wake County Open Data
 							</calcite-dropdown-item>
-							<calcite-dropdown-item href="https://data.raleighnc.gov/" target="_blank">
+							<calcite-dropdown-item rel="noreferrer" href="https://data.raleighnc.gov/" target="_blank">
 								Raleigh Open Data
 							</calcite-dropdown-item>
 						</calcite-dropdown-group>
 						<calcite-dropdown-group group-title="Links" selection-mode="none">
-							<calcite-dropdown-item href="https://data.raleighnc.gov/" target="_blank">
+							<calcite-dropdown-item rel="noreferrer" href="https://data.raleighnc.gov/" target="_blank">
 								RaleighNC.gov
 							</calcite-dropdown-item>
-							<calcite-dropdown-item href="https://wakegov.com/" target="_blank">
+							<calcite-dropdown-item rel="noreferrer" href="https://wakegov.com/" target="_blank">
 								WakeGOV.com
 							</calcite-dropdown-item>
 						</calcite-dropdown-group>
