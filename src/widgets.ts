@@ -3,7 +3,7 @@
 import Legend from '@arcgis/core//widgets/Legend';
 import ActionBar from './widgets/ActionBar';
 import PropertySearch from './widgets/PropertySearch';
-import { condosTable, addressTable, featureLayer, createTemplate } from './data/search';
+import { createTemplate } from './data/search';
 import LocationSearch from './widgets/LocationSearch';
 import Layers from './widgets/Layers';
 import BaseMaps from './widgets/BaseMaps';
@@ -26,6 +26,8 @@ import OverviewMap from './widgets/OverviewMap';
 import Clear from './widgets/Clear';
 import { Tip } from './types/tip';
 import TipManager from './widgets/TipManager';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import LayerList from './__mocks__/@arcgis/core/widgets/LayerList';
 
 export let actionBar: ActionBar;
 export let toolbar: ActionBar;
@@ -36,23 +38,44 @@ export let measurement: Measure;
 export let drawWidget: Draw;
 export let printWidget: Print;
 export let bookmarks: Bookmarks;
-
+export let legend: Legend;
+export let layers: LayerList;
+export let basemaps: BaseMaps;
 export let menu: Menu;
+export let locationSearch: LocationSearch;
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function initWidgets(view: __esri.MapView) {
 	createTemplate(view);
 	initUiWidgets(view);
 
-	const legend = new Legend({ view });
-	const layers = new Layers({ view });
-	const basemaps = new BaseMaps({ view: view });
+	legend = new Legend({ view });
+	layers = new Layers({ view });
+	basemaps = new BaseMaps({ view: view });
+	const featureLayer = view.map.allLayers.find((layer) => {
+		return layer.title.includes('Property') && layer.type === 'feature';
+	}) as FeatureLayer;
+	const condosTable = view.map.allTables.find((layer) => {
+		return layer.title.includes('Condos') && layer.type === 'feature';
+	}) as FeatureLayer;
+	const addressTable = view.map.allTables.find((layer) => {
+		return layer.title.includes('Addresses') && layer.type === 'feature';
+	}) as FeatureLayer;
+
 	propertySearch = new PropertySearch({
 		view: view,
-		condosTable: condosTable,
-		addressTable: addressTable,
-		propertyLayer: featureLayer,
 	});
+	setToolbars(view);
+	condosTable.load().then(() => {
+		condosTable.popupTemplate = createTemplate(view);
+
+		addressTable.load().then(() => {
+			propertySearch.propertyLayer = featureLayer;
+			propertySearch.condosTable = condosTable;
+			propertySearch.addressTable = addressTable;
+		});
+	});
+
 	select = new Select({
 		view: view,
 		layer: featureLayer,
@@ -78,7 +101,11 @@ export function initWidgets(view: __esri.MapView) {
 
 	bookmarks = new Bookmarks({ view, editingEnabled: true });
 
-	const locationSearch = new LocationSearch({ view });
+	locationSearch = new LocationSearch({ view });
+
+	return view;
+}
+function setToolbars(view: MapView): void {
 	toolbar.view = view;
 	actionBar.view = view;
 	toolbar.actions.concat(actionBar.actions).forEach((action) => {
@@ -113,6 +140,7 @@ export function initWidgets(view: __esri.MapView) {
 			action.widget = legend;
 		}
 	});
+	actionBar.viewModel.widgetsDefined = true;
 
 	// toolbar.actions = [
 	// 	new Action('Select', select, 'selection', 'selectDiv', true, []),
@@ -148,7 +176,6 @@ export function initWidgets(view: __esri.MapView) {
 	// actionBar.actions = [...actionBar.actions, ...toolactions];
 	//view.ui.add(legend, 'bottom-left');
 	//view.ui.add(layerList, 'top-right');
-	return view;
 }
 function initUiWidgets(view: MapView): void {
 	const coordinates: CoordinateConversion = new CoordinateConversion({ view });

@@ -1,6 +1,3 @@
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-export declare const featureLayer: FeatureLayer;
-export declare const condosTable: FeatureLayer;
-export declare const addressTable: FeatureLayer;
-export declare const createTemplate: (view: __esri.MapView | __esri.SceneView) => void;
+import PopupTemplate from '@arcgis/core/PopupTemplate';
+export declare const createTemplate: (view: __esri.MapView | __esri.SceneView) => PopupTemplate;
 export * from './app';

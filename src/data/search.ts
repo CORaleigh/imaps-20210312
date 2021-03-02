@@ -279,31 +279,40 @@ const wellCreator = (e: any) => {
 		});
 };
 
-export const featureLayer = new FeatureLayer({
-	portalItem: {
-		id: '08050bf067bb4b20adea4b0b4f0a39e3',
-	},
-	spatialReference: { wkid: 102100 },
-});
+// export const featureLayer = view.map.allLayers.find((layer) => {
+// 	return layer.title.includes('Property') && layer.type === 'feature';
+// });
+// export const condosTable = view.map.allLayers.find((layer) => {
+// 	return layer.title.includes('Condos') && layer.type === 'feature';
+// });
+// export const addressTable = view.map.allLayers.find((layer) => {
+// 	return layer.title.includes('Addresses') && layer.type === 'feature';
+// });
+// export const featureLayer = new FeatureLayer({
+// 	portalItem: {
+// 		id: '08050bf067bb4b20adea4b0b4f0a39e3',
+// 	},
+// 	spatialReference: { wkid: 102100 },
+// });
 
-export const condosTable = new FeatureLayer({
-	portalItem: {
-		id: '08050bf067bb4b20adea4b0b4f0a39e3',
-	},
-	layerId: 1,
-	spatialReference: { wkid: 102100 },
-});
-condosTable.load();
-export const addressTable = new FeatureLayer({
-	portalItem: {
-		id: '08050bf067bb4b20adea4b0b4f0a39e3',
-	},
-	layerId: 4,
-	spatialReference: { wkid: 102100 },
-});
-addressTable.load();
+// export const condosTable = new FeatureLayer({
+// 	portalItem: {
+// 		id: '08050bf067bb4b20adea4b0b4f0a39e3',
+// 	},
+// 	layerId: 1,
+// 	spatialReference: { wkid: 102100 },
+// });
+// condosTable.load();
+// export const addressTable = new FeatureLayer({
+// 	portalItem: {
+// 		id: '08050bf067bb4b20adea4b0b4f0a39e3',
+// 	},
+// 	layerId: 4,
+// 	spatialReference: { wkid: 102100 },
+// });
+// addressTable.load();
 
-export const createTemplate = (view: __esri.MapView | __esri.SceneView): void => {
+export const createTemplate = (view: __esri.MapView | __esri.SceneView): PopupTemplate => {
 	const popupTemplate = new PopupTemplate({
 		expressionInfos: arcadeExpressionInfos,
 		content: [
@@ -582,7 +591,8 @@ export const createTemplate = (view: __esri.MapView | __esri.SceneView): void =>
 			// },
 		],
 	});
-	condosTable.popupTemplate = popupTemplate;
+	return popupTemplate;
+	// condosTable.popupTemplate = popupTemplate;
 };
 
 export * from './app';

@@ -35,7 +35,8 @@ export default class ActionBar extends Widget {
 	title = '';
 	@aliasOf('viewModel.tipManager')
 	tipManager = null;
-
+	@aliasOf('viewModel.widgetsDefined')
+	widgetsDefined = false;
 	@property({
 		type: ActionBarViewModel,
 	})
@@ -49,6 +50,7 @@ export default class ActionBar extends Widget {
 	panelCreated = (): void => {
 		const observer: MutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
+				debugger;
 				(mutation.addedNodes[0] as HTMLElement)
 					.querySelector('.content-container')
 					?.setAttribute('part', 'container');
@@ -140,7 +142,11 @@ export default class ActionBar extends Widget {
 								<div
 									id={action.container}
 									key={action.container}
-									class={action.tool ? 'panel-container tool-container' : 'panel-container'}
+									class={
+										action.tool
+											? 'panel-container tool-container esri-hidden'
+											: 'panel-container esri-hidden'
+									}
 								></div>
 							);
 						}

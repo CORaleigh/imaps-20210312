@@ -4,6 +4,7 @@ import { map } from './data/app';
 
 // MapView
 import MapView from '@arcgis/core/views/MapView';
+import config from '@arcgis/core/config.js';
 
 // widget utils
 import { initWidgets, loadLayout, select, propertySearch } from './widgets';
@@ -16,6 +17,7 @@ export let view: MapView;
 // 	container: 'viewDiv',
 // 	map,
 // });
+config.assetsPath = './assets';
 const preload = document.createElement('link');
 preload.href = './assets/esri/themes/light/main.css';
 preload.setAttribute('rel', 'preload');

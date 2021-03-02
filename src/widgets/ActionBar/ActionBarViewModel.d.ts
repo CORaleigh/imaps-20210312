@@ -8,6 +8,7 @@ export default class ActionBarViewModel extends Accessor {
     actions: Action[];
     title: string;
     tipManager: TipManager;
+    widgetsDefined: boolean;
     constructor(params?: unknown);
     changePanel: (name: string) => void;
     tipButtonCreated: (elm: HTMLElement) => void;

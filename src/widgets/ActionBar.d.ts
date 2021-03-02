@@ -17,6 +17,7 @@ export default class ActionBar extends Widget {
     actions: Action[];
     title: string;
     tipManager: null;
+    widgetsDefined: boolean;
     viewModel: ActionBarViewModel;
     constructor(properties?: ActionBarProperties);
     panelCreated: () => void;

@@ -21,7 +21,7 @@ export default class LayersViewModel extends Accessor {
 	init(view: esri.MapView | esri.SceneView): void {
 		this.layerList = new LayerList({
 			view,
-			container: 'layerDiv',
+			container: 'layerWidget',
 			listItemCreatedFunction: (event) => {
 				const item = event.item;
 				if (item.layer.type != 'group') {

@@ -50,7 +50,7 @@ export default class PropertySearchViewModel extends Accessor {
 
 	searchByGeometry(geometry: esri.Geometry): void {
 		this.propertyLayer
-			.queryFeatures({ geometry: geometry, returnGeometry: true, outFields: ['OBJECTID', 'REID'] })
+			.queryFeatures({ geometry: geometry, returnGeometry: true, outFields: ['OBJECTID', 'REID'] } as esri.Query)
 			.then((propertyResult) => {
 				const relationship = this.propertyLayer.relationships.find((r) => {
 					return r.name === 'PROPERTY_CONDO';
@@ -87,7 +87,7 @@ export default class PropertySearchViewModel extends Accessor {
 						this.addGraphics(propertyResult);
 						this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, features);
 						this.featureTable.refresh();
-						this.setClickOnTableRows();
+						//this.setClickOnTableRows();
 					});
 			});
 	}
@@ -108,7 +108,7 @@ export default class PropertySearchViewModel extends Accessor {
 		// this.featureTable.layer.queryObjectIds().then((ids: number[]) => {
 		// 	this.featureTable.layer.applyEdits({ deleteFeatures: ids }).then(() => {
 		// 		this.featureTable.layer.applyEdits({ addFeatures: features }).then((e) => {
-		// 			debugger;
+		//
 		// 		});
 		// 	});
 		// });
@@ -250,12 +250,12 @@ export default class PropertySearchViewModel extends Accessor {
 									this.toggleContent('details');
 								}
 								this.featureTable.renderNow();
-								this.setClickOnTableRows();
+								//this.setClickOnTableRows();
 							});
 					} else {
 						this.getProperty(oids);
 						this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, tableFeatures);
-						this.setClickOnTableRows();
+						//this.setClickOnTableRows();
 						if (tableFeatures.length > 1) {
 							this.feature.graphic = new Graphic();
 							document.querySelector('#detailsTabTitle')?.setAttribute('disabled', '');
@@ -311,7 +311,7 @@ export default class PropertySearchViewModel extends Accessor {
 							}
 
 							this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, features);
-							this.setClickOnTableRows();
+							//this.setClickOnTableRows();
 						});
 				} else {
 					//if reid, pin, or owner selected
@@ -336,7 +336,7 @@ export default class PropertySearchViewModel extends Accessor {
 							this.condosTable.fields,
 							result.features,
 						);
-						this.setClickOnTableRows();
+						//this.setClickOnTableRows();
 					});
 				}
 			}
@@ -487,7 +487,7 @@ export default class PropertySearchViewModel extends Accessor {
 					this.toggleContent('details');
 				}
 				this.featureTable.layer = this.createFeatureTableLayer(this.condosTable.fields, result.features);
-				this.setClickOnTableRows();
+				//this.setClickOnTableRows();
 			});
 		}
 	};
@@ -538,7 +538,6 @@ export default class PropertySearchViewModel extends Accessor {
 			spatialReference: this.view.spatialReference,
 		});
 		this.view.map.add(this.clusterPoints);
-		this.checkSearchParams();
 	}
 
 	getSuggestions = (
@@ -577,6 +576,8 @@ export default class PropertySearchViewModel extends Accessor {
 			});
 	};
 	initSearch() {
+		this.checkSearchParams();
+
 		const tableLayer = new FeatureLayer({
 			fields: [
 				{ name: 'SITE_ADDRESS', type: 'string', alias: 'Address' },

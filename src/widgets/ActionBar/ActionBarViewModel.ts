@@ -4,7 +4,7 @@ import Accessor from '@arcgis/core/core/Accessor';
 
 import { property, subclass } from '@arcgis/core/core/accessorSupport/decorators';
 
-import { watch, whenDefinedOnce } from '@arcgis/core/core/watchUtils';
+import { whenDefinedOnce, whenTrueOnce } from '@arcgis/core/core/watchUtils';
 import { Action } from '../../types/action';
 import TipManager from '../TipManager';
 @subclass('app.widgets.ActionBar.ActionBarViewModel')
@@ -15,9 +15,11 @@ export default class ActionBarViewModel extends Accessor {
 	@property() actions: Action[] = [];
 	title!: string;
 	tipManager!: TipManager;
+	@property() widgetsDefined = false;
 	constructor(params?: unknown) {
 		super(params);
 		whenDefinedOnce(this, 'view', this.init.bind(this));
+		whenTrueOnce(this, 'widgetsDefined', this.initActions.bind(this));
 	}
 	changePanel = (name: string): void => {
 		if (!document.querySelector('calcite-tip-manager')?.getAttribute('closed')) {
@@ -26,14 +28,7 @@ export default class ActionBarViewModel extends Accessor {
 		const action: Action = this.actions.find((a: Action) => {
 			return a.title === name;
 		}) as Action;
-		if (action?.widget) {
-			document.getElementById(this.side + 'Panel')?.removeAttribute('dismissed');
-			this.actions.forEach((a: Action) => {
-				document.getElementById(a?.container)?.classList.add('esri-hidden');
-			});
-			action.widget.container = action?.container;
-
-			document.getElementById(action?.container)?.classList.remove('esri-hidden');
+		if (action) {
 			const heading: HTMLElement = document.getElementById(this.side + 'PanelHeading') as HTMLElement;
 			heading.innerText = action?.title;
 
@@ -55,6 +50,16 @@ export default class ActionBarViewModel extends Accessor {
 			} else {
 				document.querySelector(`#${this.side}Tip`)?.classList.add('esri-hidden');
 			}
+			if (action?.widget) {
+				document.getElementById(this.side + 'Panel')?.removeAttribute('dismissed');
+				this.actions.forEach((a: Action) => {
+					document.getElementById(a?.container)?.classList.add('esri-hidden');
+				});
+
+				action.widget.container = action?.container;
+
+				document.getElementById(action?.container)?.classList.remove('esri-hidden');
+			}
 		}
 	};
 	tipButtonCreated = (elm: HTMLElement): void => {
@@ -66,13 +71,10 @@ export default class ActionBarViewModel extends Accessor {
 			{ passive: true },
 		);
 	};
-	actionBarCreated = (): void => {
-		watch(this, 'actions', this.initActions.bind(this));
-	};
+	actionBarCreated = (): void => {};
 
 	initActions(): void {
-		requestAnimationFrame(() => {
-			debugger;
+		setTimeout(() => {
 			this.changePanel('Property Search');
 		});
 	}
